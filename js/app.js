@@ -3,6 +3,8 @@ class App {
     constructor() {
         this.currentScreen = 'home';
         this.isTransitioning = false;
+        this.settingsManager = new SettingsManager();
+        this.settingsUI = null;
         this.init();
     }
 
@@ -179,7 +181,10 @@ class App {
     }
 
     initializeSettingsScreen() {
-        // Settings screen initialization (placeholder for Epic 2)
+        // Initialize settings UI when showing settings screen
+        if (!this.settingsUI) {
+            this.settingsUI = new SettingsUI(this.settingsManager);
+        }
         console.log('Settings screen initialized');
     }
 
@@ -291,7 +296,8 @@ window.addEventListener('unhandledrejection', (e) => {
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        window.fastMathApp = new App();
+        window.app = new App();
+        window.fastMathApp = window.app; // Keep backwards compatibility
     } catch (error) {
         console.error('Failed to initialize FastMath app:', error);
         

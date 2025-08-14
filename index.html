@@ -35,9 +35,99 @@
             <!-- Settings Screen -->
             <section id="settings-screen" class="screen">
                 <h2>Game Settings</h2>
-                <!-- Settings form will be added in Epic 2 -->
-                <div class="settings-placeholder">
-                    Settings panel coming soon...
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <h3>Timing Settings</h3>
+                        
+                        <div class="setting-item">
+                            <label for="time-on-screen">Time on Screen</label>
+                            <div class="slider-container">
+                                <input type="range" id="time-on-screen" 
+                                       min="500" max="3000" step="100" value="1000">
+                                <span class="slider-value">1000ms</span>
+                            </div>
+                            <div class="setting-description">
+                                How long each number is displayed
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <label for="time-between">Time Between Numbers</label>
+                            <div class="slider-container">
+                                <input type="range" id="time-between" 
+                                       min="100" max="1000" step="50" value="300">
+                                <span class="slider-value">300ms</span>
+                            </div>
+                            <div class="setting-description">
+                                Pause between each number
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Difficulty Settings</h3>
+                        
+                        <div class="setting-item">
+                            <label for="digit-count">Number Type</label>
+                            <div class="toggle-group">
+                                <button class="toggle-btn active" data-value="2">2-Digit</button>
+                                <button class="toggle-btn" data-value="3">3-Digit</button>
+                            </div>
+                            <div class="setting-description">
+                                Choose between 2-digit (10-99) or 3-digit (100-999) numbers
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <label for="sequence-length">Sequence Length</label>
+                            <div class="number-input-container">
+                                <button class="number-btn" data-action="decrease">−</button>
+                                <input type="number" id="sequence-length" 
+                                       min="3" max="10" value="5" readonly>
+                                <button class="number-btn" data-action="increase">+</button>
+                            </div>
+                            <div class="setting-description">
+                                How many numbers to show in each round
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Audio & Feedback</h3>
+                        
+                        <div class="setting-item">
+                            <label>Sound Effects</label>
+                            <div class="switch-container">
+                                <input type="checkbox" id="sound-enabled" checked>
+                                <label for="sound-enabled" class="switch"></label>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <label>Haptic Feedback</label>
+                            <div class="switch-container">
+                                <input type="checkbox" id="haptic-enabled" checked>
+                                <label for="haptic-enabled" class="switch"></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Preview</h3>
+                        <div class="difficulty-indicator">
+                            <span class="difficulty-label">Current Difficulty:</span>
+                            <span class="difficulty-badge medium">Medium</span>
+                        </div>
+                        
+                        <button class="btn btn-secondary preview-btn">
+                            Preview Settings
+                        </button>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="btn btn-secondary reset-btn">Reset to Defaults</button>
+                        <button class="btn btn-primary save-btn">Save & Start Game</button>
+                    </div>
                 </div>
             </section>
 
@@ -72,6 +162,8 @@
         </footer>
     </div>
 
+    <script src="js/settings.js"></script>
+    <script src="js/settings-ui.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
