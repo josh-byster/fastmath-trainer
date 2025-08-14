@@ -1,0 +1,422 @@
+/* CSS Custom Properties (Design System) */
+:root {
+    /* Colors */
+    --primary-color: #007AFF;
+    --secondary-color: #5856D6;
+    --success-color: #34C759;
+    --warning-color: #FF9500;
+    --error-color: #FF3B30;
+    --background-color: #F2F2F7;
+    --surface-color: #FFFFFF;
+    --text-primary: #000000;
+    --text-secondary: #8E8E93;
+    --border-color: #C6C6C8;
+
+    /* Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-size-xs: 0.75rem;   /* 12px */
+    --font-size-sm: 0.875rem;  /* 14px */
+    --font-size-base: 1rem;    /* 16px */
+    --font-size-lg: 1.125rem;  /* 18px */
+    --font-size-xl: 1.25rem;   /* 20px */
+    --font-size-2xl: 1.5rem;   /* 24px */
+    --font-size-3xl: 2rem;     /* 32px */
+    --font-size-4xl: 3rem;     /* 48px */
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;     /* 4px */
+    --spacing-sm: 0.5rem;      /* 8px */
+    --spacing-base: 1rem;      /* 16px */
+    --spacing-lg: 1.5rem;      /* 24px */
+    --spacing-xl: 2rem;        /* 32px */
+    --spacing-2xl: 3rem;       /* 48px */
+
+    /* Layout */
+    --border-radius: 8px;
+    --border-radius-lg: 12px;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+    /* Touch targets */
+    --touch-target-min: 44px;
+}
+
+/* Base Styles and Reset */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    color: var(--text-primary);
+    background-color: var(--background-color);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none; /* Prevent text selection on mobile */
+    -webkit-touch-callout: none; /* Disable callout on iOS */
+}
+
+/* App Layout */
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 768px;
+    margin: 0 auto;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-base);
+    background-color: var(--surface-color);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.app-title {
+    margin: 0;
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.settings-btn {
+    background: none;
+    border: none;
+    font-size: var(--font-size-2xl);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    min-height: var(--touch-target-min);
+    min-width: var(--touch-target-min);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.settings-btn:hover {
+    background-color: var(--background-color);
+}
+
+.settings-btn:active {
+    transform: scale(0.95);
+}
+
+.app-main {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.app-footer {
+    background-color: var(--surface-color);
+    border-top: 1px solid var(--border-color);
+    padding: var(--spacing-sm) 0;
+}
+
+/* Screen Management */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: var(--spacing-base);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+    overflow-y: auto;
+}
+
+.screen.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.screen.exiting {
+    transform: translateX(-100%);
+}
+
+/* Home Screen */
+.welcome-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    gap: var(--spacing-lg);
+}
+
+.welcome-content h2 {
+    margin: 0;
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.welcome-content p {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    color: var(--text-secondary);
+    max-width: 300px;
+}
+
+/* Game Screen */
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: var(--spacing-2xl);
+}
+
+.game-number-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: var(--surface-color);
+    box-shadow: var(--shadow-lg);
+    border: 4px solid var(--primary-color);
+}
+
+#current-number {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    color: var(--primary-color);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Settings Screen */
+.settings-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    border: 2px dashed var(--border-color);
+    color: var(--text-secondary);
+    font-size: var(--font-size-lg);
+}
+
+/* Results Screen */
+.results-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    background-color: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    border: 2px dashed var(--border-color);
+    color: var(--text-secondary);
+    font-size: var(--font-size-lg);
+}
+
+/* Button Components */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--touch-target-min);
+    padding: var(--spacing-sm) var(--spacing-base);
+    border: none;
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    min-width: 120px;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+.btn-primary:hover {
+    background-color: #0056CC;
+}
+
+.btn-secondary {
+    background-color: var(--surface-color);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    box-shadow: var(--shadow);
+}
+
+.btn-secondary:hover {
+    background-color: var(--background-color);
+}
+
+.btn-large {
+    min-height: 56px;
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-base) var(--spacing-xl);
+    min-width: 200px;
+}
+
+/* Navigation */
+.bottom-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 0 var(--spacing-base);
+}
+
+.nav-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    min-height: var(--touch-target-min);
+    transition: color 0.2s ease;
+    cursor: pointer;
+    font-weight: 500;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
+}
+
+.nav-btn.active {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.nav-btn:hover:not(.active) {
+    color: var(--text-primary);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    margin: 0 0 var(--spacing-base) 0;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: var(--font-size-2xl);
+    color: var(--text-primary);
+}
+
+p {
+    margin: 0 0 var(--spacing-base) 0;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .app-header {
+        padding: var(--spacing-sm) var(--spacing-base);
+    }
+    
+    .app-title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .welcome-content h2 {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .welcome-content p {
+        font-size: var(--font-size-base);
+    }
+    
+    .btn-large {
+        min-width: 180px;
+        font-size: var(--font-size-base);
+    }
+    
+    .game-number-display {
+        width: 160px;
+        height: 160px;
+    }
+    
+    #current-number {
+        font-size: var(--font-size-3xl);
+    }
+}
+
+@media (max-width: 360px) {
+    .screen {
+        padding: var(--spacing-sm);
+    }
+    
+    .welcome-content {
+        gap: var(--spacing-base);
+    }
+    
+    .btn-large {
+        min-width: 160px;
+        padding: var(--spacing-sm) var(--spacing-lg);
+    }
+    
+    .game-number-display {
+        width: 140px;
+        height: 140px;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+    .welcome-content {
+        gap: var(--spacing-base);
+    }
+    
+    .welcome-content h2 {
+        font-size: var(--font-size-xl);
+    }
+    
+    .game-container {
+        gap: var(--spacing-lg);
+    }
+    
+    .game-number-display {
+        width: 120px;
+        height: 120px;
+    }
+    
+    #current-number {
+        font-size: var(--font-size-2xl);
+    }
+}
+
+/* Focus styles for accessibility */
+.btn:focus,
+.settings-btn:focus,
+.nav-btn:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Loading states */
+.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}

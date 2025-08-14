@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="FastMath">
+    <title>FastMath - Mental Math Training</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- App Shell Structure -->
+    <div id="app">
+        <!-- Header with navigation -->
+        <header class="app-header">
+            <h1 class="app-title">FastMath</h1>
+            <button class="settings-btn" aria-label="Settings">⚙️</button>
+        </header>
+
+        <!-- Main content area -->
+        <main class="app-main">
+            <!-- Home Screen -->
+            <section id="home-screen" class="screen active">
+                <div class="welcome-content">
+                    <h2>Mental Math Training</h2>
+                    <p>Train your mental arithmetic skills</p>
+                    <button class="btn btn-primary btn-large">Start Game</button>
+                    <button class="btn btn-secondary">View Statistics</button>
+                </div>
+            </section>
+
+            <!-- Settings Screen -->
+            <section id="settings-screen" class="screen">
+                <h2>Game Settings</h2>
+                <!-- Settings form will be added in Epic 2 -->
+                <div class="settings-placeholder">
+                    Settings panel coming soon...
+                </div>
+            </section>
+
+            <!-- Game Screen -->
+            <section id="game-screen" class="screen">
+                <div class="game-container">
+                    <div class="game-number-display">
+                        <span id="current-number">--</span>
+                    </div>
+                    <div class="game-controls">
+                        <!-- Game controls will be added in Epic 3 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Screen -->
+            <section id="results-screen" class="screen">
+                <h2>Results</h2>
+                <div class="results-content">
+                    <!-- Results will be added in Epic 4 -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <nav class="bottom-nav">
+                <button class="nav-btn active" data-screen="home">Home</button>
+                <button class="nav-btn" data-screen="settings">Settings</button>
+                <button class="nav-btn" data-screen="stats">Stats</button>
+            </nav>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
