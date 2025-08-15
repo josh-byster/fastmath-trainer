@@ -370,3 +370,67 @@
 .focus-ring {
     animation: focusRing 0.6s ease-out;
 }
+
+/* Game-specific animations */
+@keyframes numberPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.number-showing #current-number {
+    animation: numberPulse 0.3s ease-out;
+}
+
+/* Input slide animations */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+.game-input.active {
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Button press feedback */
+.number-key:active,
+.clear-btn:active,
+.submit-btn:not(:disabled):active {
+    animation: buttonPress 0.1s ease-out;
+}
+
+/* Success/Error feedback */
+@keyframes successFlash {
+    0%, 100% { background-color: var(--success-color); }
+    50% { background-color: #2CA94A; }
+}
+
+@keyframes errorFlash {
+    0%, 100% { background-color: var(--error-color); }
+    50% { background-color: #CC2E24; }
+}
+
+.success-feedback {
+    animation: successFlash 0.5s ease-in-out;
+}
+
+.error-feedback {
+    animation: errorFlash 0.5s ease-in-out;
+}

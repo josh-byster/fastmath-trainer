@@ -5,6 +5,7 @@ class App {
         this.isTransitioning = false;
         this.settingsManager = new SettingsManager();
         this.settingsUI = null;
+        this.gameEngine = null;
         this.init();
     }
 
@@ -189,17 +190,19 @@ class App {
     }
 
     initializeGameScreen() {
-        // Game screen initialization (placeholder for Epic 3)
-        console.log('Game screen initialized');
-        
-        // Demo: animate the number display
-        const numberDisplay = document.getElementById('current-number');
-        if (numberDisplay) {
-            numberDisplay.classList.add('number-pop');
-            setTimeout(() => {
-                numberDisplay.classList.remove('number-pop');
-            }, 300);
+        // Initialize game engine when showing game screen
+        if (!this.gameEngine) {
+            this.gameEngine = new GameEngine(this.settingsManager, this);
         }
+        
+        // Start the game automatically
+        setTimeout(() => {
+            if (this.currentScreen === 'game') {
+                this.gameEngine.startGame();
+            }
+        }, 500);
+        
+        console.log('Game screen initialized');
     }
 
     initializeStatsScreen() {

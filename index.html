@@ -138,7 +138,37 @@
                         <span id="current-number">--</span>
                     </div>
                     <div class="game-controls">
-                        <!-- Game controls will be added in Epic 3 -->
+                        <div class="game-display-container">
+                            <div class="sequence-indicator">
+                                <span class="current-position">1</span> of <span class="total-numbers">5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Input Interface -->
+                <div class="game-input">
+                    <div class="answer-section">
+                        <label for="answer-display">Your Answer:</label>
+                        <div id="answer-display" class="answer-display">0</div>
+                    </div>
+
+                    <div class="number-pad">
+                        <button class="number-key" data-number="7">7</button>
+                        <button class="number-key" data-number="8">8</button>
+                        <button class="number-key" data-number="9">9</button>
+                        
+                        <button class="number-key" data-number="4">4</button>
+                        <button class="number-key" data-number="5">5</button>
+                        <button class="number-key" data-number="6">6</button>
+                        
+                        <button class="number-key" data-number="1">1</button>
+                        <button class="number-key" data-number="2">2</button>
+                        <button class="number-key" data-number="3">3</button>
+                        
+                        <button class="clear-btn">Clear</button>
+                        <button class="number-key" data-number="0">0</button>
+                        <button class="submit-btn" disabled>✓</button>
                     </div>
                 </div>
             </section>
@@ -147,7 +177,42 @@
             <section id="results-screen" class="screen">
                 <h2>Results</h2>
                 <div class="results-content">
-                    <!-- Results will be added in Epic 4 -->
+                    <div class="result-header">
+                        <h2 class="result-status correct">Correct!</h2>
+                        <div class="score-container">
+                            <span class="score-label">Score:</span>
+                            <span class="score-display">150</span>
+                        </div>
+                    </div>
+
+                    <div class="result-details">
+                        <div class="answer-comparison">
+                            <div class="answer-item">
+                                <label>Your Answer:</label>
+                                <span class="user-answer">245</span>
+                            </div>
+                            <div class="answer-item">
+                                <label>Correct Answer:</label>
+                                <span class="correct-answer">245</span>
+                            </div>
+                        </div>
+
+                        <div class="performance-stats">
+                            <div class="stat-item">
+                                <label>Response Time:</label>
+                                <span class="response-time">3.2s</span>
+                            </div>
+                            <div class="stat-item">
+                                <label>Sequence:</label>
+                                <span class="sequence-review">45 + 67 + 89 + 44 = 245</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-actions">
+                        <button class="btn btn-primary play-again-btn">Play Again</button>
+                        <button class="btn btn-secondary view-stats-btn">View Statistics</button>
+                    </div>
                 </div>
             </section>
         </main>
@@ -164,6 +229,7 @@
 
     <script src="js/settings.js"></script>
     <script src="js/settings-ui.js"></script>
+    <script src="js/game.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
