@@ -1,0 +1,100 @@
+{
+  "name": "fastmath-pwa",
+  "version": "1.0.0",
+  "description": "Mental math training PWA built with React and TypeScript",
+  "private": true,
+  "scripts": {
+    "dev": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
+    "format": "prettier --write src/**/*.{ts,tsx,js,jsx,json,css,md}",
+    "type-check": "tsc --noEmit",
+    "serve": "serve -s build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^3.3.0",
+    "workbox-core": "^6.5.4",
+    "workbox-expiration": "^6.5.4",
+    "workbox-precaching": "^6.5.4",
+    "workbox-routing": "^6.5.4",
+    "workbox-strategies": "^6.5.4"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.8.7",
+    "serve": "^14.2.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "@typescript-eslint/recommended",
+      "prettier"
+    ],
+    "plugins": [
+      "@typescript-eslint",
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error",
+      "@typescript-eslint/no-unused-vars": "error",
+      "react-hooks/exhaustive-deps": "warn"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 80,
+    "tabWidth": 2
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/index.tsx",
+      "!src/serviceWorkerRegistration.ts",
+      "!src/reportWebVitals.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
+  }
+}
