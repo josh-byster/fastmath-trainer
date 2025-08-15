@@ -92,14 +92,29 @@ class App {
         }
 
         this.isTransitioning = true;
+        
+        // Map navigation screen names to actual screen IDs
+        let actualScreenName = screenName;
+        if (screenName === 'stats') {
+            actualScreenName = 'results'; // Map stats to results screen
+        }
+        
+        // Failsafe timeout to prevent stuck transitions
+        const transitionTimeout = setTimeout(() => {
+            if (this.isTransitioning) {
+                console.warn('Transition timeout - forcing reset');
+                this.isTransitioning = false;
+            }
+        }, 1000);
 
         // Hide current screen
         const currentScreenEl = document.getElementById(`${this.currentScreen}-screen`);
-        const targetScreenEl = document.getElementById(`${screenName}-screen`);
+        const targetScreenEl = document.getElementById(`${actualScreenName}-screen`);
 
         if (!targetScreenEl) {
-            console.warn(`Screen not found: ${screenName}`);
+            console.warn(`Screen not found: ${actualScreenName} (requested: ${screenName})`);
             this.isTransitioning = false;
+            clearTimeout(transitionTimeout);
             return;
         }
 
@@ -114,26 +129,33 @@ class App {
 
         // Show new screen after a brief delay for smooth transition
         setTimeout(() => {
-            if (currentScreenEl) {
-                currentScreenEl.classList.remove('exiting');
-            }
-            
-            targetScreenEl.classList.add('active');
-            this.currentScreen = screenName;
-            
-            // Update browser history for PWA
-            if (screenName !== 'home') {
-                history.pushState({ screen: screenName }, '', `#${screenName}`);
-            } else {
-                history.pushState({ screen: 'home' }, '', '/');
-            }
+            try {
+                if (currentScreenEl) {
+                    currentScreenEl.classList.remove('exiting');
+                }
+                
+                targetScreenEl.classList.add('active');
+                this.currentScreen = actualScreenName;
+                
+                // Update browser history for PWA
+                if (screenName !== 'home') {
+                    history.pushState({ screen: screenName }, '', `#${screenName}`);
+                } else {
+                    history.pushState({ screen: 'home' }, '', '/');
+                }
 
-            // Screen-specific initialization
-            this.initializeScreen(screenName);
+                // Screen-specific initialization
+                this.initializeScreen(actualScreenName);
 
-            setTimeout(() => {
+                setTimeout(() => {
+                    this.isTransitioning = false;
+                    clearTimeout(transitionTimeout);
+                }, 300);
+            } catch (error) {
+                console.error('Error during screen transition:', error);
                 this.isTransitioning = false;
-            }, 300);
+                clearTimeout(transitionTimeout);
+            }
         }, 50);
     }
 
@@ -143,14 +165,37 @@ class App {
             btn.classList.remove('active');
         });
 
-        // Map screen names to nav button data-screen values
-        let navScreen = screenName;
-        if (screenName === 'results') navScreen = 'stats';
-        if (screenName === 'game') navScreen = 'home'; // Game doesn't have nav button
-
-        const activeNavBtn = document.querySelector(`[data-screen="${navScreen}"]`);
+        // For stats navigation, keep the stats button active even though we show results screen
+        const activeNavBtn = document.querySelector(`[data-screen="${screenName}"]`);
         if (activeNavBtn) {
             activeNavBtn.classList.add('active');
+        }
+        
+        // Validate navigation state synchronization
+        this.validateNavigationState(screenName);
+    }
+    
+    validateNavigationState(expectedScreen) {
+        // Ensure the currently active screen matches our internal state
+        const activeScreen = document.querySelector('.screen.active');
+        const expectedActualScreen = expectedScreen === 'stats' ? 'results' : expectedScreen;
+        
+        if (activeScreen && activeScreen.id !== `${expectedActualScreen}-screen`) {
+            console.warn(`Navigation state mismatch - expected: ${expectedActualScreen}, actual: ${activeScreen.id}`);
+            // Force synchronization
+            this.currentScreen = expectedActualScreen;
+        }
+        
+        // Ensure navigation button state matches
+        const activeNavBtn = document.querySelector('.nav-btn.active');
+        const expectedNavBtn = document.querySelector(`[data-screen="${expectedScreen}"]`);
+        
+        if (activeNavBtn !== expectedNavBtn) {
+            console.warn('Navigation button state mismatch - correcting');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            if (expectedNavBtn) {
+                expectedNavBtn.classList.add('active');
+            }
         }
     }
 

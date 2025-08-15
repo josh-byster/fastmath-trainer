@@ -132,16 +132,12 @@ body {
     right: 0;
     bottom: 0;
     padding: var(--spacing-base);
-    opacity: 0;
-    visibility: hidden;
     transform: translateX(100%);
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
     overflow-y: auto;
 }
 
 .screen.active {
-    opacity: 1;
-    visibility: visible;
     transform: translateX(0);
 }
 

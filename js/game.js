@@ -85,9 +85,6 @@ class GameEngine {
 
         // Generate new sequence
         this.generateSequence();
-
-        // Switch to game screen
-        this.ui.showScreen('game');
         
         // Show get ready message
         await this.showMessage('Get Ready...', 1500);
