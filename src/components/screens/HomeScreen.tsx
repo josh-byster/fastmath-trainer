@@ -74,7 +74,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <motion.div className="mb-8" variants={itemVariants}>
           <motion.div
             className="inline-flex items-center justify-center w-24 h-24 glass rounded-3xl mb-6"
-            whileHover={{ transform: 'scale3d(1.1, 1.1, 1) rotateZ(360deg)' }}
+            whileHover={{ scale: 1.1, rotate: 360 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             style={{ willChange: 'transform' }}
           >
@@ -100,8 +100,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             className="btn-primary-modern flex items-center justify-center gap-3"
             onClick={onStartGame}
             data-testid="start-game-btn"
-            whileHover={{ transform: 'scale3d(1.05, 1.05, 1)' }}
-            whileTap={{ transform: 'scale3d(0.95, 0.95, 1)' }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             transition={{
               type: 'spring',
               stiffness: 500,
@@ -117,8 +117,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <motion.button
             className="btn-secondary-modern flex items-center justify-center gap-3"
             onClick={handleViewStats}
-            whileHover={{ transform: 'scale3d(1.05, 1.05, 1)' }}
-            whileTap={{ transform: 'scale3d(0.95, 0.95, 1)' }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             transition={{
               type: 'spring',
               stiffness: 500,
@@ -138,16 +138,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               }`}
               onClick={handleInstallApp}
               disabled={!pwaManager.canInstall()}
-              whileHover={
-                pwaManager.canInstall()
-                  ? { transform: 'scale3d(1.05, 1.05, 1)' }
-                  : {}
-              }
-              whileTap={
-                pwaManager.canInstall()
-                  ? { transform: 'scale3d(0.95, 0.95, 1)' }
-                  : {}
-              }
+              whileHover={pwaManager.canInstall() ? { scale: 1.05 } : {}}
+              whileTap={pwaManager.canInstall() ? { scale: 0.95 } : {}}
               transition={{
                 type: 'spring',
                 stiffness: 500,
