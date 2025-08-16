@@ -10,7 +10,7 @@ describe('GameLogic', () => {
 
     it('should generate 2-digit numbers (10-99)', () => {
       const sequence = GameLogic.generateSequence(2, 10);
-      sequence.forEach(num => {
+      sequence.forEach((num) => {
         expect(num).toBeGreaterThanOrEqual(10);
         expect(num).toBeLessThanOrEqual(99);
       });
@@ -18,7 +18,7 @@ describe('GameLogic', () => {
 
     it('should generate 3-digit numbers (100-999)', () => {
       const sequence = GameLogic.generateSequence(3, 10);
-      sequence.forEach(num => {
+      sequence.forEach((num) => {
         expect(num).toBeGreaterThanOrEqual(100);
         expect(num).toBeLessThanOrEqual(999);
       });
@@ -44,24 +44,77 @@ describe('GameLogic', () => {
   });
 
   describe('calculateScore', () => {
-    it('should return 0 for incorrect answer', () => {
-      const score = GameLogic.calculateScore(false, 5000);
-      expect(score).toBe(0);
+    const easySettings: GameSettings = {
+      digitCount: 2,
+      sequenceLength: 3,
+      timeOnScreen: 2000,
+      timeBetween: 500,
+      soundEnabled: true,
+      hapticEnabled: true,
+    };
+
+    const hardSettings: GameSettings = {
+      digitCount: 3,
+      sequenceLength: 8,
+      timeOnScreen: 700,
+      timeBetween: 200,
+      soundEnabled: true,
+      hapticEnabled: true,
+    };
+
+    it('should give perfect score for correct answer', () => {
+      const result = GameLogic.calculateScore(100, 100, 5000, easySettings);
+      expect(result.score).toBeGreaterThan(0);
+      expect(result.accuracyPercentage).toBe(100);
     });
 
-    it('should return base score for slow correct answer', () => {
-      const score = GameLogic.calculateScore(true, 15000);
-      expect(score).toBe(100);
+    it('should give partial credit for close answer', () => {
+      const result = GameLogic.calculateScore(95, 100, 5000, easySettings);
+      expect(result.score).toBeGreaterThan(0);
+      expect(result.accuracyPercentage).toBe(95);
     });
 
-    it('should add time bonus for fast correct answer', () => {
-      const score = GameLogic.calculateScore(true, 2000);
-      expect(score).toBeGreaterThan(100);
+    it('should give zero score for very wrong answer', () => {
+      const result = GameLogic.calculateScore(50, 100, 5000, easySettings);
+      expect(result.score).toBe(0);
+      expect(result.accuracyPercentage).toBe(0);
     });
 
-    it('should calculate score correctly for very fast answer', () => {
-      const score = GameLogic.calculateScore(true, 1000);
-      expect(score).toBe(190); // 100 + (10000 - 1000) / 100
+    it('should increase score for higher difficulty', () => {
+      const easyResult = GameLogic.calculateScore(100, 100, 5000, easySettings);
+      const hardResult = GameLogic.calculateScore(100, 100, 5000, hardSettings);
+      expect(hardResult.score).toBeGreaterThan(easyResult.score);
+      expect(hardResult.difficultyMultiplier).toBe(2.0);
+      expect(easyResult.difficultyMultiplier).toBe(1.0);
+    });
+
+    it('should add speed bonus for fast responses', () => {
+      const slowResult = GameLogic.calculateScore(
+        100,
+        100,
+        15000,
+        easySettings
+      );
+      const fastResult = GameLogic.calculateScore(100, 100, 2000, easySettings);
+      expect(fastResult.speedBonus).toBeGreaterThan(slowResult.speedBonus);
+    });
+
+    it('should calculate accuracy multiplier correctly', () => {
+      expect(GameLogic.calculateAccuracyMultiplier(100, 100)).toBe(1.0);
+      expect(GameLogic.calculateAccuracyMultiplier(95, 100)).toBe(0.95);
+      expect(GameLogic.calculateAccuracyMultiplier(50, 100)).toBe(0);
+      expect(GameLogic.calculateAccuracyMultiplier(90, 100)).toBe(0.9);
+    });
+
+    it('should calculate speed multiplier correctly', () => {
+      expect(GameLogic.calculateSpeedMultiplier(2000)).toBeCloseTo(0.389, 2);
+      expect(GameLogic.calculateSpeedMultiplier(20000)).toBe(0);
+      expect(GameLogic.calculateSpeedMultiplier(1000)).toBeCloseTo(0.44, 2);
+    });
+
+    it('should get difficulty multiplier correctly', () => {
+      expect(GameLogic.getDifficultyMultiplier(easySettings)).toBe(1.0);
+      expect(GameLogic.getDifficultyMultiplier(hardSettings)).toBe(2.0);
     });
   });
 

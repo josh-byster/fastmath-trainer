@@ -24,6 +24,9 @@ export interface GameResult {
   responseTime: number;
   score: number;
   sequence: number[];
+  accuracyPercentage: number;
+  difficultyMultiplier: number;
+  speedBonus: number;
 }
 
 export interface PerformanceStats {

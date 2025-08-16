@@ -164,14 +164,25 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
       settings.hapticEnabled
     );
 
+    // Calculate new scoring metrics
+    const scoringData = GameLogic.calculateScore(
+      userSum,
+      gameState.correctSum,
+      responseTime,
+      settings
+    );
+
     // Create extended game result for statistics
     const gameResultExtended: GameResultExtended = {
       isCorrect,
       userAnswer: userSum,
       correctAnswer: gameState.correctSum,
       responseTime,
-      score: 0, // Will be calculated by scoring system
+      score: scoringData.score,
       sequence: gameState.currentSequence,
+      accuracyPercentage: scoringData.accuracyPercentage,
+      difficultyMultiplier: scoringData.difficultyMultiplier,
+      speedBonus: scoringData.speedBonus,
       settings,
       mistakes: 0, // Could be enhanced to track input mistakes
     };
@@ -185,8 +196,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
       userAnswer: userSum,
       correctAnswer: gameState.correctSum,
       responseTime,
-      score: scoreResult.score,
+      score: scoringData.score,
       sequence: gameState.currentSequence,
+      accuracyPercentage: scoringData.accuracyPercentage,
+      difficultyMultiplier: scoringData.difficultyMultiplier,
+      speedBonus: scoringData.speedBonus,
     };
 
     setGameState((prev) => ({ ...prev, state: 'finished', endTime }));
