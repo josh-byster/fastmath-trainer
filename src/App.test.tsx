@@ -43,7 +43,7 @@ describe('App', () => {
     const statsNavButton = screen.getByTestId('nav-stats');
     
     fireEvent.click(statsNavButton);
-    expect(screen.getByText('Statistics')).toBeInTheDocument();
+    expect(screen.getByText('Your Progress')).toBeInTheDocument();
     
     const homeNavButton = screen.getByTestId('nav-home');
     fireEvent.click(homeNavButton);
@@ -53,11 +53,11 @@ describe('App', () => {
   it('renders accessibility announcements area', () => {
     render(<App />);
     
-    const announcements = screen.getByRole('status');
+    const announcements = screen.getByText('Game state updates will be announced here');
     expect(announcements).toBeInTheDocument();
     expect(announcements).toHaveAttribute('aria-live', 'polite');
     expect(announcements).toHaveAttribute('aria-atomic', 'true');
-    expect(announcements).toHaveTextContent('Game state updates will be announced here');
+    expect(announcements).toHaveAttribute('id', 'announcements');
   });
 
   it('provides settings context to child components', () => {

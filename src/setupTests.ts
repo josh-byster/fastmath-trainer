@@ -58,29 +58,56 @@ Object.defineProperty(navigator, 'vibrate', {
   value: jest.fn(),
 });
 
-// Mock framer-motion components to avoid animation prop warnings
-jest.mock('framer-motion', () => ({
-  motion: {
-    div: 'div',
-    section: 'section', 
-    button: 'button',
-    span: 'span',
-    h1: 'h1',
-    h2: 'h2',
-    h3: 'h3',
-    p: 'p',
-    header: 'header',
-    main: 'main',
-    nav: 'nav',
-    form: 'form',
-    label: 'label',
-    input: 'input',
-    select: 'select',
-    option: 'option',
-    textarea: 'textarea',
-  },
-  AnimatePresence: ({ children }) => children,
-}));
+// Mock framer-motion components to avoid animation prop warnings  
+jest.mock('framer-motion', () => {
+  // Create a function that returns a component that filters framer-motion props
+  const createMockComponent = (tagName: string) => (props: any) => {
+    const {
+      initial,
+      animate,
+      exit,
+      variants,
+      transition,
+      whileHover,
+      whileTap,
+      whileFocus,
+      whileInView,
+      layoutId,
+      layout,
+      drag,
+      dragConstraints,
+      dragElastic,
+      ...cleanProps
+    } = props;
+    
+    // Return just the tag name to be created with clean props
+    return require('react').createElement(tagName, cleanProps);
+  };
+
+  return {
+    motion: {
+      div: createMockComponent('div'),
+      section: createMockComponent('section'), 
+      button: createMockComponent('button'),
+      span: createMockComponent('span'),
+      h1: createMockComponent('h1'),
+      h2: createMockComponent('h2'),
+      h3: createMockComponent('h3'),
+      p: createMockComponent('p'),
+      header: createMockComponent('header'),
+      main: createMockComponent('main'),
+      nav: createMockComponent('nav'),
+      footer: createMockComponent('footer'),
+      form: createMockComponent('form'),
+      label: createMockComponent('label'),
+      input: createMockComponent('input'),
+      select: createMockComponent('select'),
+      option: createMockComponent('option'),
+      textarea: createMockComponent('textarea'),
+    },
+    AnimatePresence: ({ children }: any) => children,
+  };
+});
 
 // Ensure document.body exists for React Testing Library
 beforeAll(() => {

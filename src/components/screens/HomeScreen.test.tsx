@@ -14,7 +14,7 @@ describe('HomeScreen', () => {
     render(<HomeScreen onStartGame={mockOnStartGame} />);
     
     expect(screen.getByText('Mental Math Training')).toBeInTheDocument();
-    expect(screen.getByText('Train your mental arithmetic skills')).toBeInTheDocument();
+    expect(screen.getByText(/Enhance your mental arithmetic skills/)).toBeInTheDocument();
   });
 
   it('renders the start game button', () => {
@@ -22,7 +22,7 @@ describe('HomeScreen', () => {
     
     const startButton = screen.getByTestId('start-game-btn');
     expect(startButton).toBeInTheDocument();
-    expect(startButton).toHaveTextContent('Start Game');
+    expect(startButton).toHaveTextContent('Start Training');
   });
 
   it('renders the view statistics button', () => {
@@ -55,10 +55,11 @@ describe('HomeScreen', () => {
   });
 
   it('has correct CSS classes applied', () => {
-    render(<HomeScreen onStartGame={mockOnStartGame} />);
+    const { container } = render(<HomeScreen onStartGame={mockOnStartGame} />);
     
-    const section = screen.getByRole('region');
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
+    const section = container.querySelector('section');
     expect(section).toBeInTheDocument();
-    expect(section).toHaveClass('screen-modern');
+    expect(section).toHaveClass('screen-modern', 'flex', 'items-center', 'justify-center');
   });
 });
