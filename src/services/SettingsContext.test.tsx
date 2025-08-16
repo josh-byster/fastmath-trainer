@@ -14,7 +14,7 @@ Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 // Test component to use the context
 const TestComponent: React.FC = () => {
   const { settings, updateSettings, resetSettings } = useSettings();
-  
+
   return (
     <div>
       <div data-testid="digit-count">{settings.digitCount}</div>
@@ -22,19 +22,18 @@ const TestComponent: React.FC = () => {
       <div data-testid="time-on-screen">{settings.timeOnScreen}</div>
       <div data-testid="time-between">{settings.timeBetween}</div>
       <div data-testid="sound-enabled">{settings.soundEnabled.toString()}</div>
-      <div data-testid="haptic-enabled">{settings.hapticEnabled.toString()}</div>
-      
+      <div data-testid="haptic-enabled">
+        {settings.hapticEnabled.toString()}
+      </div>
+
       <button
         data-testid="update-settings"
         onClick={() => updateSettings({ digitCount: 3, soundEnabled: false })}
       >
         Update Settings
       </button>
-      
-      <button
-        data-testid="reset-settings"
-        onClick={resetSettings}
-      >
+
+      <button data-testid="reset-settings" onClick={resetSettings}>
         Reset Settings
       </button>
     </div>
@@ -85,7 +84,9 @@ describe('SettingsContext', () => {
   });
 
   it('handles invalid JSON in localStorage gracefully', () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
     localStorageMock.getItem.mockReturnValue('invalid json');
 
     render(
@@ -96,8 +97,11 @@ describe('SettingsContext', () => {
 
     // Should fall back to default settings
     expect(screen.getByTestId('digit-count')).toHaveTextContent('2');
-    expect(consoleSpy).toHaveBeenCalledWith('Failed to parse saved settings:', expect.any(Error));
-    
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Failed to parse saved settings:',
+      expect.any(Error)
+    );
+
     consoleSpy.mockRestore();
   });
 
@@ -161,7 +165,9 @@ describe('SettingsContext', () => {
       return <div>Test</div>;
     };
 
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
 
     expect(() => {
       render(<TestComponentWithoutProvider />);
@@ -173,13 +179,15 @@ describe('SettingsContext', () => {
   it('partially updates settings without affecting other values', () => {
     const PartialUpdateTestComponent: React.FC = () => {
       const { settings, updateSettings } = useSettings();
-      
+
       return (
         <div>
           <div data-testid="digit-count">{settings.digitCount}</div>
           <div data-testid="sequence-length">{settings.sequenceLength}</div>
-          <div data-testid="sound-enabled">{settings.soundEnabled.toString()}</div>
-          
+          <div data-testid="sound-enabled">
+            {settings.soundEnabled.toString()}
+          </div>
+
           <button
             data-testid="partial-update"
             onClick={() => updateSettings({ digitCount: 3 })}
@@ -195,7 +203,7 @@ describe('SettingsContext', () => {
         <PartialUpdateTestComponent />
       </SettingsProvider>
     );
-    
+
     fireEvent.click(screen.getByTestId('partial-update'));
 
     expect(screen.getByTestId('digit-count')).toHaveTextContent('3');

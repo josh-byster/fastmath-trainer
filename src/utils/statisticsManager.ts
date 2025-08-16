@@ -94,7 +94,7 @@ export class StatisticsManager {
     gameHistory: [],
     dailyStats: {},
     achievements: [],
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
   };
 
   private achievementCallbacks: ((achievement: Achievement) => void)[] = [];
@@ -109,11 +109,11 @@ export class StatisticsManager {
       if (saved) {
         const parsed = JSON.parse(saved);
         this.stats = { ...this.stats, ...parsed };
-        
+
         // Convert date strings back to Date objects
-        this.stats.gameHistory = this.stats.gameHistory.map(game => ({
+        this.stats.gameHistory = this.stats.gameHistory.map((game) => ({
           ...game,
-          timestamp: new Date(game.timestamp)
+          timestamp: new Date(game.timestamp),
         }));
       }
     } catch (error) {
@@ -140,7 +140,10 @@ export class StatisticsManager {
     if (gameResult.isCorrect) {
       this.stats.correctGames++;
       this.stats.currentStreak++;
-      this.stats.bestStreak = Math.max(this.stats.bestStreak, this.stats.currentStreak);
+      this.stats.bestStreak = Math.max(
+        this.stats.bestStreak,
+        this.stats.currentStreak
+      );
     } else {
       this.stats.currentStreak = 0;
     }
@@ -150,7 +153,9 @@ export class StatisticsManager {
     }
 
     // Update average response time
-    const totalTime = this.stats.averageResponseTime * (this.stats.totalGames - 1) + gameResult.responseTime;
+    const totalTime =
+      this.stats.averageResponseTime * (this.stats.totalGames - 1) +
+      gameResult.responseTime;
     this.stats.averageResponseTime = totalTime / this.stats.totalGames;
 
     // Add to game history
@@ -163,7 +168,7 @@ export class StatisticsManager {
       isCorrect: gameResult.isCorrect,
       responseTime: gameResult.responseTime,
       score: scoreData.score,
-      breakdown: { ...scoreData.breakdown }
+      breakdown: { ...scoreData.breakdown },
     };
 
     this.stats.gameHistory.push(gameRecord);
@@ -180,7 +185,7 @@ export class StatisticsManager {
         correct: 0,
         totalScore: 0,
         bestScore: 0,
-        totalTime: 0
+        totalTime: 0,
       };
     }
 
@@ -188,7 +193,7 @@ export class StatisticsManager {
     dayStats.games++;
     dayStats.totalScore += scoreData.score;
     dayStats.totalTime += gameResult.responseTime;
-    
+
     if (gameResult.isCorrect) {
       dayStats.correct++;
     }
@@ -209,67 +214,73 @@ export class StatisticsManager {
         id: 'first_game',
         name: 'First Steps',
         description: 'Complete your first game',
-        condition: () => this.stats.totalGames === 1
+        condition: () => this.stats.totalGames === 1,
       },
       {
         id: 'perfect_score',
         name: 'Perfect!',
         description: 'Get a perfect accuracy score',
-        condition: () => gameRecord.breakdown.accuracy === 100
+        condition: () => gameRecord.breakdown.accuracy === 100,
       },
       {
         id: 'speed_demon',
         name: 'Speed Demon',
         description: 'Complete a game in under 2 seconds',
-        condition: () => gameRecord.responseTime < 2000
+        condition: () => gameRecord.responseTime < 2000,
       },
       {
         id: 'streak_5',
         name: 'On Fire',
         description: 'Get 5 correct answers in a row',
-        condition: () => this.stats.currentStreak === 5
+        condition: () => this.stats.currentStreak === 5,
       },
       {
         id: 'streak_10',
         name: 'Unstoppable',
         description: 'Get 10 correct answers in a row',
-        condition: () => this.stats.currentStreak === 10
+        condition: () => this.stats.currentStreak === 10,
       },
       {
         id: 'high_scorer',
         name: 'High Scorer',
         description: 'Score over 1500 points',
-        condition: () => gameRecord.score >= 1500
+        condition: () => gameRecord.score >= 1500,
       },
       {
         id: 'century',
         name: 'Centurion',
         description: 'Play 100 games',
-        condition: () => this.stats.totalGames === 100
-      }
+        condition: () => this.stats.totalGames === 100,
+      },
     ];
 
-    achievements.forEach(achievement => {
-      if (!this.hasAchievement(achievement.id) && achievement.condition && achievement.condition()) {
+    achievements.forEach((achievement) => {
+      if (
+        !this.hasAchievement(achievement.id) &&
+        achievement.condition &&
+        achievement.condition()
+      ) {
         this.unlockAchievement(achievement);
       }
     });
   }
 
   hasAchievement(achievementId: string): boolean {
-    return this.stats.achievements.some(a => a.id === achievementId);
+    return this.stats.achievements.some((a) => a.id === achievementId);
   }
 
   private unlockAchievement(achievement: Achievement): void {
     const unlockedAchievement: Achievement = {
       ...achievement,
-      unlockedAt: new Date().toISOString()
+      unlockedAt: new Date().toISOString(),
     };
 
     this.stats.achievements.push(unlockedAchievement);
 
     // Notify listeners
-    this.achievementCallbacks.forEach(callback => callback(unlockedAchievement));
+    this.achievementCallbacks.forEach((callback) =>
+      callback(unlockedAchievement)
+    );
   }
 
   onAchievementUnlocked(callback: (achievement: Achievement) => void): void {
@@ -277,13 +288,15 @@ export class StatisticsManager {
   }
 
   getStatsSummary(): StatsSummary {
-    const accuracy = this.stats.totalGames > 0 
-      ? (this.stats.correctGames / this.stats.totalGames) * 100 
-      : 0;
+    const accuracy =
+      this.stats.totalGames > 0
+        ? (this.stats.correctGames / this.stats.totalGames) * 100
+        : 0;
 
-    const averageScore = this.stats.totalGames > 0
-      ? this.stats.totalScore / this.stats.totalGames
-      : 0;
+    const averageScore =
+      this.stats.totalGames > 0
+        ? this.stats.totalScore / this.stats.totalGames
+        : 0;
 
     return {
       totalGames: this.stats.totalGames,
@@ -293,7 +306,7 @@ export class StatisticsManager {
       currentStreak: this.stats.currentStreak,
       bestStreak: this.stats.bestStreak,
       averageResponseTime: Math.round(this.stats.averageResponseTime),
-      achievements: this.stats.achievements.length
+      achievements: this.stats.achievements.length,
     };
   }
 
@@ -301,34 +314,36 @@ export class StatisticsManager {
     return this.stats.gameHistory
       .slice(-count)
       .reverse()
-      .map(game => ({
+      .map((game) => ({
         timestamp: game.timestamp,
         score: game.score,
         isCorrect: game.isCorrect,
         responseTime: game.responseTime,
-        difficulty: game.settings.digitCount === 3 ? 'Hard' : 'Medium'
+        difficulty: game.settings.digitCount === 3 ? 'Hard' : 'Medium',
       }));
   }
 
   getPerformanceTrends(): PerformanceTrend[] {
-    const last30Days = this.stats.gameHistory
-      .filter(game => {
-        const daysDiff = (Date.now() - game.timestamp.getTime()) / (1000 * 60 * 60 * 24);
-        return daysDiff <= 30;
-      });
+    const last30Days = this.stats.gameHistory.filter((game) => {
+      const daysDiff =
+        (Date.now() - game.timestamp.getTime()) / (1000 * 60 * 60 * 24);
+      return daysDiff <= 30;
+    });
 
     // Group by day
-    const dailyPerformance: { [key: string]: { games: number; totalScore: number; correct: number } } = {};
-    last30Days.forEach(game => {
+    const dailyPerformance: {
+      [key: string]: { games: number; totalScore: number; correct: number };
+    } = {};
+    last30Days.forEach((game) => {
       const dateKey = game.timestamp.toISOString().split('T')[0];
       if (!dailyPerformance[dateKey]) {
         dailyPerformance[dateKey] = {
           games: 0,
           totalScore: 0,
-          correct: 0
+          correct: 0,
         };
       }
-      
+
       dailyPerformance[dateKey].games++;
       dailyPerformance[dateKey].totalScore += game.score;
       if (game.isCorrect) dailyPerformance[dateKey].correct++;
@@ -339,7 +354,7 @@ export class StatisticsManager {
         date,
         averageScore: Math.round(stats.totalScore / stats.games),
         accuracy: Math.round((stats.correct / stats.games) * 100),
-        games: stats.games
+        games: stats.games,
       }))
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
@@ -350,23 +365,29 @@ export class StatisticsManager {
       recentGames: this.getRecentGames(50),
       trends: this.getPerformanceTrends(),
       achievements: this.stats.achievements,
-      exportedAt: new Date().toISOString()
+      exportedAt: new Date().toISOString(),
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-      type: 'application/json'
+      type: 'application/json',
     });
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `fastmath-stats-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `fastmath-stats-${
+      new Date().toISOString().split('T')[0]
+    }.json`;
     a.click();
     URL.revokeObjectURL(url);
   }
 
   reset(): boolean {
-    if (window.confirm('Are you sure you want to reset all statistics? This cannot be undone.')) {
+    if (
+      window.confirm(
+        'Are you sure you want to reset all statistics? This cannot be undone.'
+      )
+    ) {
       this.stats = {
         totalGames: 0,
         correctGames: 0,
@@ -378,7 +399,7 @@ export class StatisticsManager {
         gameHistory: [],
         dailyStats: {},
         achievements: [],
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
       this.save();
       return true;

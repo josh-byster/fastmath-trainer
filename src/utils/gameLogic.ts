@@ -3,7 +3,7 @@ import { GameSettings } from '../types/game.types';
 export class GameLogic {
   static generateSequence(digitCount: 2 | 3, sequenceLength: number): number[] {
     const sequence: number[] = [];
-    
+
     for (let i = 0; i < sequenceLength; i++) {
       let number: number;
       if (digitCount === 2) {
@@ -34,17 +34,19 @@ export class GameLogic {
     return !isNaN(userSum) && userSum === correctSum;
   }
 
-  static getDifficultyLevel(settings: GameSettings): 'easy' | 'medium' | 'hard' {
+  static getDifficultyLevel(
+    settings: GameSettings
+  ): 'easy' | 'medium' | 'hard' {
     const { digitCount, sequenceLength, timeOnScreen } = settings;
-    
+
     if (digitCount === 2 && sequenceLength <= 4 && timeOnScreen >= 1500) {
       return 'easy';
     }
-    
+
     if (digitCount === 3 || sequenceLength >= 8 || timeOnScreen <= 800) {
       return 'hard';
     }
-    
+
     return 'medium';
   }
 

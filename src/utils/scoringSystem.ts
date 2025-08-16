@@ -45,7 +45,7 @@ export class ScoringSystem {
     timeBetween: { min: 100, max: 1000, weight: 0.1 },
     digitCount: { 2: 1.0, 3: 1.8, weight: 0.25 },
     sequenceLength: { min: 3, max: 10, weight: 0.25 },
-    speedBonus: { weight: 0.1 }
+    speedBonus: { weight: 0.1 },
   };
 
   calculateScore(gameResult: GameResultExtended): ScoreResult {
@@ -54,7 +54,7 @@ export class ScoringSystem {
       responseTime,
       sequence,
       settings,
-      mistakes = 0
+      mistakes = 0,
     } = gameResult;
 
     if (!isCorrect) {
@@ -65,13 +65,13 @@ export class ScoringSystem {
           accuracy: 0,
           difficulty: Math.round(difficulty * 100),
           speed: 0,
-          total: 0
+          total: 0,
         },
         multipliers: {
           difficulty,
           accuracy: 0,
-          speed: 0
-        }
+          speed: 0,
+        },
       };
     }
 
@@ -88,42 +88,46 @@ export class ScoringSystem {
         accuracy: Math.round(accuracy * 100),
         difficulty: Math.round(difficulty * 100),
         speed: Math.round(speed * 100),
-        total: totalScore
+        total: totalScore,
       },
       multipliers: {
         difficulty,
         accuracy,
-        speed
-      }
+        speed,
+      },
     };
   }
 
   calculateDifficulty(settings: GameSettings): number {
     const weights = this.difficultyWeights;
-    
+
     // Time pressure (shorter = harder)
-    const timeScore = this.normalizeInverse(
-      settings.timeOnScreen,
-      weights.timeOnScreen.min,
-      weights.timeOnScreen.max
-    ) * weights.timeOnScreen.weight;
+    const timeScore =
+      this.normalizeInverse(
+        settings.timeOnScreen,
+        weights.timeOnScreen.min,
+        weights.timeOnScreen.max
+      ) * weights.timeOnScreen.weight;
 
     // Gap pressure (shorter = harder)
-    const gapScore = this.normalizeInverse(
-      settings.timeBetween,
-      weights.timeBetween.min,
-      weights.timeBetween.max
-    ) * weights.timeBetween.weight;
+    const gapScore =
+      this.normalizeInverse(
+        settings.timeBetween,
+        weights.timeBetween.min,
+        weights.timeBetween.max
+      ) * weights.timeBetween.weight;
 
     // Digit complexity
-    const digitScore = (weights.digitCount[settings.digitCount] - 1) * weights.digitCount.weight;
+    const digitScore =
+      (weights.digitCount[settings.digitCount] - 1) * weights.digitCount.weight;
 
     // Sequence length (more numbers = harder)
-    const lengthScore = this.normalize(
-      settings.sequenceLength,
-      weights.sequenceLength.min,
-      weights.sequenceLength.max
-    ) * weights.sequenceLength.weight;
+    const lengthScore =
+      this.normalize(
+        settings.sequenceLength,
+        weights.sequenceLength.min,
+        weights.sequenceLength.max
+      ) * weights.sequenceLength.weight;
 
     return Math.max(0.1, 1 + timeScore + gapScore + digitScore + lengthScore);
   }
@@ -136,7 +140,8 @@ export class ScoringSystem {
 
   calculateSpeedBonus(responseTime: number, settings: GameSettings): number {
     // Expected time based on sequence length and display time
-    const sequenceTime = settings.sequenceLength * (settings.timeOnScreen + settings.timeBetween);
+    const sequenceTime =
+      settings.sequenceLength * (settings.timeOnScreen + settings.timeBetween);
     const expectedThinkTime = Math.max(2000, sequenceTime * 0.5);
     const maxResponseTime = expectedThinkTime + 10000; // 10 second grace period
 
@@ -144,8 +149,9 @@ export class ScoringSystem {
     if (responseTime <= expectedThinkTime) return 1.2;
 
     // Linear scaling between expected time and max time
-    const ratio = (maxResponseTime - responseTime) / (maxResponseTime - expectedThinkTime);
-    return 0.5 + (0.7 * ratio);
+    const ratio =
+      (maxResponseTime - responseTime) / (maxResponseTime - expectedThinkTime);
+    return 0.5 + 0.7 * ratio;
   }
 
   normalize(value: number, min: number, max: number): number {
@@ -164,9 +170,11 @@ export class ScoringSystem {
       { min: 801, max: 1200, name: 'Skilled', color: '#FF9500' },
       { min: 1201, max: 1600, name: 'Expert', color: '#FF3B30' },
       { min: 1601, max: 2000, name: 'Master', color: '#34C759' },
-      { min: 2001, max: Infinity, name: 'Grandmaster', color: '#FFD700' }
+      { min: 2001, max: Infinity, name: 'Grandmaster', color: '#FFD700' },
     ];
 
-    return ranks.find(rank => score >= rank.min && score <= rank.max) || ranks[0];
+    return (
+      ranks.find((rank) => score >= rank.min && score <= rank.max) || ranks[0]
+    );
   }
 }

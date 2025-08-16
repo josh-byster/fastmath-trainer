@@ -1,6 +1,16 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import { StatisticsManager, Achievement } from '../utils/statisticsManager';
-import { ScoringSystem, GameResultExtended, ScoreResult } from '../utils/scoringSystem';
+import {
+  ScoringSystem,
+  GameResultExtended,
+  ScoreResult,
+} from '../utils/scoringSystem';
 import { AchievementNotification } from '../components/AchievementNotification';
 
 interface StatisticsContextType {
@@ -9,18 +19,23 @@ interface StatisticsContextType {
   recordGame: (gameResult: GameResultExtended) => ScoreResult;
 }
 
-const StatisticsContext = createContext<StatisticsContextType | undefined>(undefined);
+const StatisticsContext = createContext<StatisticsContextType | undefined>(
+  undefined
+);
 
-export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const statisticsManagerRef = useRef<StatisticsManager | null>(null);
   const scoringSystemRef = useRef<ScoringSystem | null>(null);
-  const [activeAchievement, setActiveAchievement] = useState<Achievement | null>(null);
+  const [activeAchievement, setActiveAchievement] =
+    useState<Achievement | null>(null);
 
   // Initialize managers only once
   if (!statisticsManagerRef.current) {
     statisticsManagerRef.current = new StatisticsManager();
   }
-  
+
   if (!scoringSystemRef.current) {
     scoringSystemRef.current = new ScoringSystem();
   }
@@ -41,7 +56,7 @@ export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
     const scoreResult = scoringSystemRef.current.calculateScore(gameResult);
     statisticsManagerRef.current.recordGame(gameResult, scoreResult);
-    
+
     return scoreResult;
   };
 
@@ -54,7 +69,7 @@ export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       value={{
         statisticsManager: statisticsManagerRef.current,
         scoringSystem: scoringSystemRef.current,
-        recordGame
+        recordGame,
       }}
     >
       {children}

@@ -6,16 +6,15 @@ interface AchievementNotificationProps {
   onClose: () => void;
 }
 
-export const AchievementNotification: React.FC<AchievementNotificationProps> = ({
-  achievement,
-  onClose
-}) => {
+export const AchievementNotification: React.FC<
+  AchievementNotificationProps
+> = ({ achievement, onClose }) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     // Show animation
     const showTimer = setTimeout(() => setShow(true), 100);
-    
+
     // Auto-hide after 3 seconds
     const hideTimer = setTimeout(() => {
       setShow(false);

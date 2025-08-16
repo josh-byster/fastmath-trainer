@@ -8,12 +8,15 @@ export class AudioManager {
   constructor() {
     // Initialize audio context on first user interaction
     document.addEventListener('click', this.initializeAudio, { once: true });
-    document.addEventListener('touchstart', this.initializeAudio, { once: true });
+    document.addEventListener('touchstart', this.initializeAudio, {
+      once: true,
+    });
   }
 
   private initializeAudio = () => {
     if (!this.isInitialized) {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      this.audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
       this.generateSounds();
       this.isInitialized = true;
     }

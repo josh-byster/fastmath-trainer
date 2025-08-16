@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import { GameSettings } from '../types/game.types';
 
 const defaultSettings: GameSettings = {
@@ -16,13 +22,17 @@ interface SettingsContextType {
   resetSettings: () => void;
 }
 
-const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
+const SettingsContext = createContext<SettingsContextType | undefined>(
+  undefined
+);
 
 interface SettingsProviderProps {
   children: ReactNode;
 }
 
-export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
+export const SettingsProvider: React.FC<SettingsProviderProps> = ({
+  children,
+}) => {
   const [settings, setSettings] = useState<GameSettings>(defaultSettings);
 
   useEffect(() => {
@@ -50,7 +60,9 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
   };
 
   return (
-    <SettingsContext.Provider value={{ settings, updateSettings, resetSettings }}>
+    <SettingsContext.Provider
+      value={{ settings, updateSettings, resetSettings }}
+    >
       {children}
     </SettingsContext.Provider>
   );
