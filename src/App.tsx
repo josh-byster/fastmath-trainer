@@ -150,7 +150,7 @@ const App: React.FC = () => {
 
             <Header onSettingsClick={() => navigateToScreen('settings')} />
 
-            <main className="relative z-10 flex-1 overflow-auto">
+            <main className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentScreen}
