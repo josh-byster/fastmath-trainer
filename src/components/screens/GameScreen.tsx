@@ -192,7 +192,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
       </div>
 
       {showInput && (
-        <div className="game-input-panel fixed bottom-0 left-0 right-0">
+        <div className="game-input-panel fixed bottom-20 left-0 right-0">
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <label htmlFor="answer-display" className="text-lg font-semibold text-slate-700 dark:text-slate-200">
