@@ -1,0 +1,221 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+  min-height: 100vh;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dark body {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  color: #f1f5f9;
+}
+
+@layer components {
+  /* Glass morphism effects */
+  .glass {
+    @apply backdrop-blur-xl bg-white/20 dark:bg-white/5;
+    @apply border border-white/20 dark:border-white/10;
+    @apply shadow-2xl shadow-black/10 dark:shadow-black/30;
+  }
+  
+  .glass-card {
+    @apply glass rounded-2xl p-6;
+  }
+  
+  /* Modern buttons */
+  .btn-modern {
+    @apply relative overflow-hidden rounded-xl px-8 py-4 font-semibold transition-all duration-300;
+    @apply transform-gpu hover:scale-105 active:scale-95;
+    @apply shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-primary-modern {
+    @apply btn-modern;
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700;
+    @apply text-white;
+    @apply before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity;
+  }
+  
+  .btn-secondary-modern {
+    @apply btn-modern;
+    @apply glass text-slate-700 dark:text-slate-200;
+    @apply hover:bg-white/30 dark:hover:bg-white/10;
+  }
+  
+  /* Number display with glassmorphism */
+  .number-display {
+    @apply glass-card text-center;
+    @apply w-64 h-64 flex items-center justify-center;
+    @apply text-6xl font-bold;
+    @apply bg-gradient-to-br from-blue-600 to-indigo-600 bg-clip-text text-transparent;
+    @apply animate-float;
+  }
+  
+  /* Navigation with blur effect */
+  .nav-modern {
+    @apply glass rounded-t-2xl;
+    @apply border-t border-white/20 dark:border-white/10;
+  }
+  
+  /* Settings sections */
+  .settings-section {
+    @apply glass-card space-y-6;
+  }
+  
+  /* Game input panel */
+  .game-input-panel {
+    @apply glass rounded-t-2xl p-6;
+    @apply border-t border-white/20 dark:border-white/10;
+    @apply backdrop-blur-2xl;
+  }
+  
+  /* Number pad styling */
+  .number-key {
+    @apply glass rounded-xl;
+    @apply w-16 h-16 flex items-center justify-center;
+    @apply text-xl font-semibold;
+    @apply text-slate-700 dark:text-slate-200;
+    @apply transition-all duration-200;
+    @apply hover:scale-110 active:scale-95;
+    @apply hover:bg-white/30 dark:hover:bg-white/10;
+  }
+  
+  .clear-key {
+    @apply number-key;
+    @apply bg-gradient-to-r from-red-500 to-pink-500 text-white;
+    @apply hover:from-red-600 hover:to-pink-600;
+  }
+  
+  .submit-key {
+    @apply number-key;
+    @apply bg-gradient-to-r from-green-500 to-emerald-500 text-white;
+    @apply hover:from-green-600 hover:to-emerald-600;
+  }
+  
+  /* Header styling */
+  .header-modern {
+    @apply glass border-b border-white/20 dark:border-white/10;
+    @apply backdrop-blur-xl;
+  }
+  
+  /* Screen transitions */
+  .screen-modern {
+    @apply min-h-screen p-6;
+  }
+  
+  /* Results styling */
+  .result-card {
+    @apply glass-card text-center space-y-4;
+  }
+  
+  .score-display {
+    @apply text-4xl font-bold;
+    @apply bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent;
+  }
+  
+  /* Dark mode utilities */
+  .dark-toggle {
+    @apply glass rounded-full p-2;
+    @apply transition-all duration-300;
+    @apply hover:scale-110 active:scale-95;
+  }
+}
+
+@layer utilities {
+  /* Custom gradient backgrounds */
+  .bg-gradient-mesh {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .bg-gradient-mesh-dark {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  }
+  
+  /* Text gradients */
+  .text-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-success {
+    @apply bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-error {
+    @apply bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent;
+  }
+  
+  /* Animation utilities */
+  .animate-in {
+    @apply animate-scale-in;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  /* Glow effects */
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  
+  .glow-green {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+  }
+  
+  .glow-red {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  }
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .number-display {
+    @apply w-48 h-48 text-4xl;
+  }
+  
+  .btn-modern {
+    @apply px-6 py-3 text-sm;
+  }
+  
+  .glass-card {
+    @apply p-4;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

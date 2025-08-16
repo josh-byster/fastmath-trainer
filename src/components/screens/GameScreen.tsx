@@ -168,40 +168,52 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
   };
 
   return (
-    <section className="screen active" data-testid="game-screen">
-      <div className="game-container">
-        <div className="game-number-display">
+    <section className="screen-modern flex flex-col items-center justify-center" data-testid="game-screen">
+      <div className="flex flex-col items-center space-y-8 w-full max-w-md mx-auto">
+        <div className="number-display">
           <span 
             id="current-number"
             data-testid="current-number"
-            className={currentNumber.includes('Get Ready') || currentNumber.includes('Enter') ? 'message-showing' : ''}
+            className={`${currentNumber.includes('Get Ready') || currentNumber.includes('Enter') ? 'text-2xl font-medium' : 'text-6xl font-bold'} transition-all duration-300`}
           >
             {currentNumber}
           </span>
-          <div className="sequence-indicator" data-testid="sequence-progress">
-            <span className="current-position">{sequencePosition.current}</span> of{' '}
-            <span className="total-numbers">{sequencePosition.total}</span>
-          </div>
         </div>
-        <div data-testid="game-state" data-state={gameState.state}></div>
-        <div data-testid="game-timer"></div>
+        
+        <div className="glass-card text-center" data-testid="sequence-progress">
+          <p className="text-sm text-slate-600 dark:text-slate-400">
+            <span className="font-semibold text-blue-600 dark:text-blue-400">{sequencePosition.current}</span> of{' '}
+            <span className="font-semibold">{sequencePosition.total}</span>
+          </p>
+        </div>
+
+        <div data-testid="game-state" data-state={gameState.state} className="hidden"></div>
+        <div data-testid="game-timer" className="hidden"></div>
       </div>
 
       {showInput && (
-        <div className={`game-input ${showInput ? 'active' : ''}`}>
-          <div className="answer-section">
-            <label htmlFor="answer-display">Your Answer:</label>
-            <div id="answer-display" className="answer-display" data-testid="user-input">
-              {gameState.userAnswer || '0'}
+        <div className="game-input-panel fixed bottom-0 left-0 right-0">
+          <div className="space-y-6">
+            <div className="text-center space-y-2">
+              <label htmlFor="answer-display" className="text-lg font-semibold text-slate-700 dark:text-slate-200">
+                Your Answer:
+              </label>
+              <div 
+                id="answer-display" 
+                className="glass-card mx-auto w-48 h-16 flex items-center justify-center text-3xl font-bold text-blue-600 dark:text-blue-400" 
+                data-testid="user-input"
+              >
+                {gameState.userAnswer || '0'}
+              </div>
             </div>
-          </div>
 
-          <NumberPad
-            onNumberClick={handleNumberInput}
-            onClear={handleClearInput}
-            onSubmit={handleSubmitAnswer}
-            canSubmit={gameState.userAnswer.length > 0}
-          />
+            <NumberPad
+              onNumberClick={handleNumberInput}
+              onClear={handleClearInput}
+              onSubmit={handleSubmitAnswer}
+              canSubmit={gameState.userAnswer.length > 0}
+            />
+          </div>
         </div>
       )}
     </section>

@@ -41,7 +41,7 @@ export const NumberPad: React.FC<NumberPadProps> = ({
   }, [handleKeyDown]);
 
   return (
-    <div className="number-pad" data-testid="number-pad">
+    <div className="grid grid-cols-3 gap-4 max-w-xs mx-auto" data-testid="number-pad">
       {numbers.map((digit) => (
         <button
           key={digit}
@@ -53,7 +53,7 @@ export const NumberPad: React.FC<NumberPadProps> = ({
         </button>
       ))}
       
-      <button className="clear-btn" data-testid="clear-btn" onClick={onClear}>
+      <button className="clear-key" data-testid="clear-btn" onClick={onClear}>
         Clear
       </button>
       
@@ -66,7 +66,7 @@ export const NumberPad: React.FC<NumberPadProps> = ({
       </button>
       
       <button
-        className="submit-btn"
+        className={`submit-key ${!canSubmit ? 'opacity-50 cursor-not-allowed' : ''}`}
         data-testid="submit-btn"
         onClick={onSubmit}
         disabled={!canSubmit}
