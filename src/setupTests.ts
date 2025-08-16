@@ -58,53 +58,35 @@ Object.defineProperty(navigator, 'vibrate', {
   value: jest.fn(),
 });
 
-// Mock framer-motion
+// Mock framer-motion components to avoid animation prop warnings
 jest.mock('framer-motion', () => ({
   motion: {
     div: 'div',
-    section: 'section',
+    section: 'section', 
     button: 'button',
     span: 'span',
     h1: 'h1',
     h2: 'h2',
     h3: 'h3',
     p: 'p',
+    header: 'header',
+    main: 'main',
+    nav: 'nav',
+    form: 'form',
+    label: 'label',
+    input: 'input',
+    select: 'select',
+    option: 'option',
+    textarea: 'textarea',
   },
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => children,
+  AnimatePresence: ({ children }) => children,
 }));
 
-// Mock document methods and properties for DOM manipulation
-Object.defineProperty(document, 'documentElement', {
-  value: {
-    style: {},
-    classList: {
-      add: jest.fn(),
-      remove: jest.fn(),
-      contains: jest.fn(),
-    },
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    appendChild: jest.fn(),
-    removeChild: jest.fn(),
-  },
-  writable: true,
-});
-
-// Mock document.body
-Object.defineProperty(document, 'body', {
-  value: {
-    style: {},
-    classList: {
-      add: jest.fn(),
-      remove: jest.fn(),
-      contains: jest.fn(),
-    },
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    appendChild: jest.fn(),
-    removeChild: jest.fn(),
-  },
-  writable: true,
+// Ensure document.body exists for React Testing Library
+beforeAll(() => {
+  if (!document.body) {
+    document.body = document.createElement('body');
+  }
 });
 
 // Mock DOM element methods for testing
