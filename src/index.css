@@ -44,8 +44,9 @@ body {
   /* Modern buttons */
   .btn-modern {
     @apply relative overflow-hidden rounded-xl px-8 py-4 font-semibold transition-all duration-300;
-    @apply transform-gpu hover:scale-105 active:scale-95;
     @apply shadow-lg hover:shadow-xl;
+    will-change: transform;
+    backface-visibility: hidden;
   }
   
   .btn-primary-modern {
@@ -95,8 +96,9 @@ body {
     @apply text-xl font-semibold;
     @apply text-slate-700 dark:text-slate-200;
     @apply transition-all duration-200;
-    @apply hover:scale-110 active:scale-95;
     @apply hover:bg-white/30 dark:hover:bg-white/10;
+    will-change: transform;
+    backface-visibility: hidden;
   }
   
   .clear-key {
@@ -155,7 +157,8 @@ body {
   .dark-toggle {
     @apply glass rounded-full p-2;
     @apply transition-all duration-300;
-    @apply hover:scale-110 active:scale-95;
+    will-change: transform;
+    backface-visibility: hidden;
   }
 }
 
@@ -189,6 +192,10 @@ body {
   
   .animate-float {
     animation: float 6s ease-in-out infinite;
+    will-change: transform;
+    backface-visibility: hidden;
+    perspective: 1000px;
+    transform-style: preserve-3d;
   }
   
   /* Glow effects */
@@ -239,10 +246,16 @@ body {
 /* Custom animations */
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translate3d(0, 0, 0) rotateZ(0deg);
+  }
+  25% {
+    transform: translate3d(0, -5px, 0) rotateZ(0.5deg);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translate3d(0, -10px, 0) rotateZ(0deg);
+  }
+  75% {
+    transform: translate3d(0, -5px, 0) rotateZ(-0.5deg);
   }
 }
 

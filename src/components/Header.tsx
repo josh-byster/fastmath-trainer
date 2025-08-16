@@ -20,8 +20,14 @@ export const Header: React.FC<HeaderProps> = ({ onSettingsClick }) => {
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         <motion.h1
           className="text-3xl font-bold text-gradient"
-          whileHover={{ scale: 1.05 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+          whileHover={{ transform: 'scale3d(1.05, 1.05, 1)' }}
+          transition={{
+            type: 'spring',
+            stiffness: 500,
+            damping: 25,
+            mass: 0.5,
+          }}
+          style={{ willChange: 'transform' }}
         >
           FastMath
         </motion.h1>
@@ -30,8 +36,15 @@ export const Header: React.FC<HeaderProps> = ({ onSettingsClick }) => {
           <motion.button
             className="dark-toggle"
             onClick={toggleTheme}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ transform: 'scale3d(1.1, 1.1, 1)' }}
+            whileTap={{ transform: 'scale3d(0.95, 0.95, 1)' }}
+            transition={{
+              type: 'spring',
+              stiffness: 500,
+              damping: 25,
+              mass: 0.5,
+            }}
+            style={{ willChange: 'transform' }}
             aria-label={`Switch to ${
               theme === 'light' ? 'dark' : 'light'
             } mode`}
@@ -46,9 +59,15 @@ export const Header: React.FC<HeaderProps> = ({ onSettingsClick }) => {
           <motion.button
             className="glass rounded-full p-3 text-slate-600 dark:text-slate-300 hover:bg-white/30 dark:hover:bg-white/10 transition-all duration-300"
             onClick={onSettingsClick}
-            whileHover={{ scale: 1.1, rotate: 90 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+            whileHover={{ transform: 'scale3d(1.1, 1.1, 1) rotateZ(90deg)' }}
+            whileTap={{ transform: 'scale3d(0.95, 0.95, 1)' }}
+            transition={{
+              type: 'spring',
+              stiffness: 500,
+              damping: 25,
+              mass: 0.5,
+            }}
+            style={{ willChange: 'transform' }}
             aria-label="Settings"
           >
             <Settings className="w-5 h-5" />

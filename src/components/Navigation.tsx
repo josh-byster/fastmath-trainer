@@ -44,9 +44,15 @@ export const Navigation: React.FC<NavigationProps> = ({
                 }`}
                 data-testid={`nav-${screen}`}
                 onClick={() => onNavigate(screen)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                whileHover={{ transform: 'scale3d(1.05, 1.05, 1)' }}
+                whileTap={{ transform: 'scale3d(0.95, 0.95, 1)' }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 500,
+                  damping: 25,
+                  mass: 0.5,
+                }}
+                style={{ willChange: 'transform' }}
               >
                 {isActive && (
                   <motion.div
@@ -55,8 +61,13 @@ export const Navigation: React.FC<NavigationProps> = ({
                     initial={false}
                     transition={{
                       type: 'spring',
-                      stiffness: 500,
-                      damping: 30,
+                      stiffness: 600,
+                      damping: 35,
+                      mass: 0.8,
+                    }}
+                    style={{
+                      willChange: 'transform',
+                      backfaceVisibility: 'hidden',
                     }}
                   />
                 )}
