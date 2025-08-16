@@ -52,7 +52,7 @@ const App: React.FC = () => {
                 navigator.serviceWorker.controller
               ) {
                 // Show update available notification
-                pwaManager?.showUpdateAvailable();
+                manager.showUpdateAvailable();
               }
             });
           }
@@ -62,7 +62,7 @@ const App: React.FC = () => {
       // Listen for service worker controller changes (after update)
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         // Show success notification
-        pwaManager?.showUpdateNotification();
+        manager.showUpdateNotification();
         // Reload the page to get the latest version
         window.location.reload();
       });
@@ -71,7 +71,7 @@ const App: React.FC = () => {
     // Cleanup
     return () => {
       window.removeEventListener('pwa-shortcut', handlePWAShortcut);
-      manager?.destroy();
+      manager.destroy();
     };
   }, []);
 

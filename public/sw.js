@@ -3,13 +3,11 @@ const CACHE_NAME = 'fastmath-v1.0.0';
 
 // Install event
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installing...');
   self.skipWaiting();
 });
 
 // Activate event
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activating...');
   event.waitUntil(self.clients.claim());
 });
 

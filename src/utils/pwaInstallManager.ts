@@ -55,7 +55,6 @@ export class PWAInstallManager {
 
     // Listen for install prompt
     window.addEventListener('beforeinstallprompt', (e) => {
-      console.log('beforeinstallprompt event fired');
       e.preventDefault();
       this.deferredPrompt = e as BeforeInstallPromptEvent;
       this.updateInstallUI();
@@ -63,7 +62,6 @@ export class PWAInstallManager {
 
     // Listen for successful install
     window.addEventListener('appinstalled', () => {
-      console.log('PWA installed successfully');
       this.isInstalled = true;
       this.deferredPrompt = null;
       this.updateInstallUI();
@@ -138,29 +136,17 @@ export class PWAInstallManager {
 
   async promptInstall() {
     if (!this.deferredPrompt) {
-      console.log(
-        'Install prompt not available. Showing manual install instructions.'
-      );
       this.showManualInstallInstructions();
       return;
     }
 
     try {
       this.deferredPrompt.prompt();
-      const { outcome } = await this.deferredPrompt.userChoice;
-
-      console.log('Install prompt outcome:', outcome);
-
-      if (outcome === 'accepted') {
-        console.log('User accepted install prompt');
-      } else {
-        console.log('User dismissed install prompt');
-      }
-
+      await this.deferredPrompt.userChoice;
       this.deferredPrompt = null;
       this.updateInstallUI();
     } catch (error) {
-      console.error('Install prompt failed:', error);
+      // Handle error silently
     }
   }
 
@@ -296,14 +282,7 @@ export class PWAInstallManager {
 
   canInstall(): boolean {
     // Allow installation if not already installed, even without deferred prompt
-    const canInstall = !this.isInstalled && !this.isStandalone;
-    console.log('PWA canInstall check:', {
-      deferredPrompt: !!this.deferredPrompt,
-      isInstalled: this.isInstalled,
-      isStandalone: this.isStandalone,
-      canInstall,
-    });
-    return canInstall;
+    return !this.isInstalled && !this.isStandalone;
   }
 
   destroy() {

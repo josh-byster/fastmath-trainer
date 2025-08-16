@@ -15,14 +15,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigate,
   pwaManager,
 }) => {
-  // Debug PWA manager status
-  React.useEffect(() => {
-    console.log('HomeScreen PWA Manager:', pwaManager);
-    if (pwaManager) {
-      console.log('PWA Manager canInstall:', pwaManager.canInstall());
-    }
-  }, [pwaManager]);
-
   const handleViewStats = (): void => {
     if (onNavigate) {
       onNavigate('stats');
@@ -31,10 +23,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const handleInstallApp = (): void => {
     if (pwaManager) {
-      console.log('Install button clicked');
       pwaManager.promptInstall();
-    } else {
-      console.log('No PWA manager available');
     }
   };
 
