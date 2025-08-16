@@ -132,6 +132,25 @@ body {
     @apply bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent;
   }
   
+  /* Range slider styling */
+  .slider-thumb {
+    @apply bg-slate-200 dark:bg-slate-700;
+  }
+  
+  .slider-thumb::-webkit-slider-thumb {
+    @apply w-5 h-5 rounded-full appearance-none cursor-pointer;
+    @apply bg-blue-600 hover:bg-blue-700;
+    @apply shadow-lg shadow-blue-600/30;
+    @apply transition-all duration-200;
+  }
+  
+  .slider-thumb::-moz-range-thumb {
+    @apply w-5 h-5 rounded-full border-0 cursor-pointer;
+    @apply bg-blue-600 hover:bg-blue-700;
+    @apply shadow-lg shadow-blue-600/30;
+    @apply transition-all duration-200;
+  }
+
   /* Dark mode utilities */
   .dark-toggle {
     @apply glass rounded-full p-2;
