@@ -46,18 +46,20 @@ export const NumberPad: React.FC<NumberPadProps> = ({
         <button
           key={digit}
           className="number-key"
+          data-testid={`number-${digit}`}
           onClick={() => onNumberClick(digit)}
         >
           {digit}
         </button>
       ))}
       
-      <button className="clear-btn" onClick={onClear}>
+      <button className="clear-btn" data-testid="clear-btn" onClick={onClear}>
         Clear
       </button>
       
       <button 
         className="number-key" 
+        data-testid="number-0"
         onClick={() => onNumberClick('0')}
       >
         0

@@ -17,6 +17,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onStartGame }) => {
         <p>Train your mental arithmetic skills</p>
         <button 
           className="btn btn-primary btn-large"
+          data-testid="start-game-btn"
           onClick={onStartGame}
         >
           Start Game

@@ -43,6 +43,8 @@
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
     "cypress": "^14.5.4",
+    "cypress-axe": "^1.6.0",
+    "cypress-real-events": "^1.14.0",
     "eslint": "^8.37.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",

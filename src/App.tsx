@@ -48,6 +48,9 @@ const App: React.FC = () => {
           currentScreen={currentScreen} 
           onNavigate={navigateToScreen} 
         />
+        <div aria-live="polite" aria-atomic="true" className="sr-only" id="announcements">
+          Game state updates will be announced here
+        </div>
       </div>
     </SettingsProvider>
   );

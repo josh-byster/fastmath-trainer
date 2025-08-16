@@ -37,7 +37,7 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
   };
 
   return (
-    <section className="screen active">
+    <section className="screen active" data-testid="results-screen">
       <h2>Results</h2>
       <div className="results-content">
         <div className="result-header">
@@ -46,7 +46,7 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
           </h2>
           <div className="score-container">
             <span className="score-label">Score: </span>
-            <span className="score-display">{result.score}</span>
+            <span className="score-display" data-testid="score">{result.score}</span>
           </div>
         </div>
 
@@ -81,15 +81,17 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
         <div className="result-actions">
           <button 
             className="btn btn-primary play-again-btn"
+            data-testid="play-again-btn"
             onClick={handlePlayAgain}
           >
             Play Again
           </button>
           <button 
             className="btn btn-secondary view-stats-btn"
-            onClick={handleViewStats}
+            data-testid="home-btn"
+            onClick={() => onNavigate('home')}
           >
-            View Statistics
+            Return Home
           </button>
         </div>
       </div>

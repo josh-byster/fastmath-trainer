@@ -74,9 +74,9 @@ Cypress.Commands.add('inputAnswer', (answer: string) => {
 });
 
 Cypress.Commands.add('waitForSequenceComplete', () => {
-  cy.get('[data-testid="game-state"]').should('contain', 'input');
+  cy.get('[data-testid="game-state"]').should('have.attr', 'data-state', 'input');
 });
 
 Cypress.Commands.add('checkGameState', (state: string) => {
-  cy.get('[data-testid="game-state"]').should('contain', state);
+  cy.get('[data-testid="game-state"]').should('have.attr', 'data-state', state);
 });

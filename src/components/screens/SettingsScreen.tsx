@@ -60,6 +60,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onNavigate }) =>
               <input
                 type="range"
                 id="time-on-screen"
+                data-testid="time-on-screen-slider"
                 min="500"
                 max="3000"
                 step="100"
@@ -79,6 +80,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onNavigate }) =>
               <input
                 type="range"
                 id="time-between"
+                data-testid="time-between-slider"
                 min="100"
                 max="1000"
                 step="50"
@@ -102,12 +104,14 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onNavigate }) =>
             <div className="toggle-group">
               <button
                 className={`toggle-btn ${settings.digitCount === 2 ? 'active' : ''}`}
+                data-testid="digit-count-2"
                 onClick={() => handleDigitCountChange(2)}
               >
                 2-Digit
               </button>
               <button
                 className={`toggle-btn ${settings.digitCount === 3 ? 'active' : ''}`}
+                data-testid="digit-count-3"
                 onClick={() => handleDigitCountChange(3)}
               >
                 3-Digit
@@ -123,6 +127,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onNavigate }) =>
             <div className="number-input-container">
               <button
                 className="number-btn"
+                data-testid="sequence-length-minus"
                 onClick={() => handleSequenceLengthChange(-1)}
                 disabled={settings.sequenceLength <= 3}
               >
@@ -131,6 +136,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onNavigate }) =>
               <input
                 type="number"
                 id="sequence-length"
+                data-testid="sequence-length-input"
                 min="3"
                 max="10"
                 value={settings.sequenceLength}
@@ -138,6 +144,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onNavigate }) =>
               />
               <button
                 className="number-btn"
+                data-testid="sequence-length-plus"
                 onClick={() => handleSequenceLengthChange(1)}
                 disabled={settings.sequenceLength >= 10}
               >
@@ -160,6 +167,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onNavigate }) =>
               <input
                 type="checkbox"
                 id="sound-enabled"
+                data-testid="sound-toggle"
                 checked={settings.soundEnabled}
                 onChange={handleSoundToggle}
               />
@@ -173,6 +181,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onNavigate }) =>
               <input
                 type="checkbox"
                 id="haptic-enabled"
+                data-testid="haptic-toggle"
                 checked={settings.hapticEnabled}
                 onChange={handleHapticToggle}
               />
@@ -184,7 +193,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onNavigate }) =>
         {/* Preview */}
         <div className="settings-section">
           <h3>Preview</h3>
-          <div className="difficulty-indicator">
+          <div className="difficulty-indicator" data-testid="difficulty-indicator">
             <span className="difficulty-label">Current Difficulty:</span>
             <span className={`difficulty-badge ${difficultyLevel}`}>
               {difficultyLevel.charAt(0).toUpperCase() + difficultyLevel.slice(1)}
@@ -193,7 +202,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onNavigate }) =>
         </div>
 
         <div className="settings-actions">
-          <button className="btn btn-secondary reset-btn" onClick={handleReset}>
+          <button className="btn btn-secondary reset-btn" data-testid="reset-settings-btn" onClick={handleReset}>
             Reset to Defaults
           </button>
           <button className="btn btn-primary save-btn" onClick={handleSaveAndStart}>

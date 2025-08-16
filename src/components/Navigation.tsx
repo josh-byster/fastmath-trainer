@@ -23,6 +23,7 @@ export const Navigation: React.FC<NavigationProps> = ({
           <button
             key={screen}
             className={`nav-btn ${currentScreen === screen ? 'active' : ''}`}
+            data-testid={`nav-${screen}`}
             onClick={() => onNavigate(screen)}
           >
             {label}
