@@ -97,14 +97,78 @@
     @apply text-green-800 dark:text-green-200;
   }
 
+  /* Mobile safe area and navigation adjustments */
+  .nav-modern {
+    @apply glass;
+    @apply border-t border-white/20 dark:border-white/10;
+    padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+    min-height: 80px;
+  }
+  
+  /* Game Screen Layout */
+  .game-screen-container {
+    @apply relative w-full;
+    /* Ensure full height considering navigation */
+    height: calc(100vh - 80px);
+    min-height: calc(100vh - 80px);
+  }
+
+  .game-main-content {
+    @apply h-full flex items-center justify-center p-4;
+  }
+
+  /* Input Panel Backdrop - positioned relative to viewport for full coverage */
+  .game-input-backdrop {
+    @apply fixed inset-0 bg-white dark:bg-gray-900 z-40;
+    /* Fully opaque background */
+    backdrop-filter: none;
+  }
+
+  /* New Input Panel Positioning - fixed to viewport center */
+  .game-input-panel-new {
+    @apply fixed z-50;
+    @apply glass rounded-2xl;
+    @apply border border-white/20 dark:border-white/10;
+    @apply backdrop-blur-2xl;
+    /* Center within the viewport */
+    @apply left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2;
+    @apply w-full max-w-md mx-4;
+    max-height: 70vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    will-change: transform;
+  }
+
+  .game-input-content {
+    @apply p-6 space-y-6;
+  }
+
+  /* Old game input panel - keeping for backward compatibility */
+  .game-input-panel {
+    @apply glass rounded-t-2xl p-6;
+    @apply border-t border-white/20 dark:border-white/10;
+    @apply backdrop-blur-2xl;
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    max-height: 65vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  
+  /* Main content mobile spacing */
+  .main-content-mobile {
+    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  }
+
   /* Standalone mode adjustments */
   @media (display-mode: standalone) {
     .app-header {
       padding-top: env(safe-area-inset-top, 1rem);
     }
     
-    .app-footer, .bottom-navigation {
-      padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+    .nav-modern {
+      padding-bottom: env(safe-area-inset-bottom, 1rem);
     }
     
     /* Hide the install button when in standalone mode */
@@ -200,23 +264,14 @@ body {
     @apply animate-float;
   }
   
-  /* Navigation with blur effect */
-  .nav-modern {
-    @apply glass;
-    @apply border-t border-white/20 dark:border-white/10;
-  }
+  /* Navigation styling moved to mobile adjustments section above */
   
   /* Settings sections */
   .settings-section {
     @apply glass-card space-y-6;
   }
   
-  /* Game input panel */
-  .game-input-panel {
-    @apply glass rounded-t-2xl p-6;
-    @apply border-t border-white/20 dark:border-white/10;
-    @apply backdrop-blur-2xl;
-  }
+  /* Game input panel styling moved to mobile adjustments section above */
   
   /* Number pad styling */
   .number-key {
@@ -226,8 +281,13 @@ body {
     @apply text-slate-700 dark:text-slate-200;
     @apply transition-all duration-200;
     @apply hover:bg-white/30 dark:hover:bg-white/10;
+    @apply active:scale-95 active:bg-white/40 dark:active:bg-white/20;
     will-change: transform;
     backface-visibility: hidden;
+    /* Better mobile interaction */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
   }
   
   .clear-key {
@@ -400,6 +460,57 @@ body {
   
   .glass-card {
     @apply p-4;
+  }
+  
+  /* Simple mobile navigation spacing */
+  .nav-modern {
+    padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+  }
+
+  /* Game screen mobile adjustments */
+  .game-screen-container {
+    /* Adjust for mobile viewport height and navigation */
+    height: calc(100vh - 80px - env(safe-area-inset-bottom, 0px));
+    min-height: calc(100vh - 80px - env(safe-area-inset-bottom, 0px));
+  }
+  
+  /* Mobile bottom padding to avoid navigation overlap */
+  .pb-safe {
+    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Mobile-specific input panel positioning */
+  .game-input-panel-new {
+    /* Keep centered positioning but adjust for mobile */
+    max-height: 60vh;
+    @apply w-11/12 max-w-sm;
+    /* Ensure proper centering on mobile */
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .game-input-content {
+    @apply p-4 space-y-4;
+  }
+  
+  /* Input panel positioned above navigation - old class */
+  .game-input-panel {
+    position: fixed;
+    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+    left: 0;
+    right: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  
+  /* Number pad mobile optimization */
+  .number-key {
+    @apply w-14 h-14 text-lg;
+    min-width: 44px;
+    min-height: 44px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
