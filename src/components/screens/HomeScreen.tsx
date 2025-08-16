@@ -2,24 +2,39 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Play, TrendingUp, Brain, Download } from 'lucide-react';
 import { PWAInstallManager } from '../../utils/pwaInstallManager';
+import { Screen } from '../../types/game.types';
 
 interface HomeScreenProps {
   onStartGame: () => void;
+  onNavigate?: (screen: Screen) => void;
   pwaManager?: PWAInstallManager;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   onStartGame,
+  onNavigate,
   pwaManager,
 }) => {
+  // Debug PWA manager status
+  React.useEffect(() => {
+    console.log('HomeScreen PWA Manager:', pwaManager);
+    if (pwaManager) {
+      console.log('PWA Manager canInstall:', pwaManager.canInstall());
+    }
+  }, [pwaManager]);
+
   const handleViewStats = (): void => {
-    // TODO: Navigate to stats screen
-    console.log('View statistics clicked');
+    if (onNavigate) {
+      onNavigate('stats');
+    }
   };
 
   const handleInstallApp = (): void => {
     if (pwaManager) {
+      console.log('Install button clicked');
       pwaManager.promptInstall();
+    } else {
+      console.log('No PWA manager available');
     }
   };
 
@@ -116,12 +131,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             View Statistics
           </motion.button>
 
-          {pwaManager && pwaManager.canInstall() && (
+          {pwaManager && (
             <motion.button
-              className="btn-secondary-modern flex items-center justify-center gap-3"
+              className={`btn-secondary-modern flex items-center justify-center gap-3 ${
+                !pwaManager.canInstall() ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
               onClick={handleInstallApp}
-              whileHover={{ transform: 'scale3d(1.05, 1.05, 1)' }}
-              whileTap={{ transform: 'scale3d(0.95, 0.95, 1)' }}
+              disabled={!pwaManager.canInstall()}
+              whileHover={
+                pwaManager.canInstall()
+                  ? { transform: 'scale3d(1.05, 1.05, 1)' }
+                  : {}
+              }
+              whileTap={
+                pwaManager.canInstall()
+                  ? { transform: 'scale3d(0.95, 0.95, 1)' }
+                  : {}
+              }
               transition={{
                 type: 'spring',
                 stiffness: 500,
@@ -129,6 +155,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 mass: 0.5,
               }}
               style={{ willChange: 'transform' }}
+              title={
+                !pwaManager.canInstall()
+                  ? 'App install not available'
+                  : 'Install FastMath as an app'
+              }
             >
               <Download className="w-5 h-5" />
               Install App

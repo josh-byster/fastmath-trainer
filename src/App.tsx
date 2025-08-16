@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Screen, GameResult } from './types/game.types';
 import { Header } from './components/Header';
@@ -18,11 +18,12 @@ const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
   const [gameResult, setGameResult] = useState<GameResult | undefined>();
   const [scoreResult, setScoreResult] = useState<ScoreResult | undefined>();
-  const pwaManagerRef = useRef<PWAInstallManager | null>(null);
+  const [pwaManager, setPwaManager] = useState<PWAInstallManager | null>(null);
 
   // Initialize PWA Install Manager
   useEffect(() => {
-    pwaManagerRef.current = new PWAInstallManager();
+    const manager = new PWAInstallManager();
+    setPwaManager(manager);
 
     // Handle PWA shortcuts
     const handlePWAShortcut = (event: Event) => {
@@ -51,7 +52,7 @@ const App: React.FC = () => {
                 navigator.serviceWorker.controller
               ) {
                 // Show update available notification
-                pwaManagerRef.current?.showUpdateAvailable();
+                pwaManager?.showUpdateAvailable();
               }
             });
           }
@@ -61,7 +62,7 @@ const App: React.FC = () => {
       // Listen for service worker controller changes (after update)
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         // Show success notification
-        pwaManagerRef.current?.showUpdateNotification();
+        pwaManager?.showUpdateNotification();
         // Reload the page to get the latest version
         window.location.reload();
       });
@@ -70,7 +71,7 @@ const App: React.FC = () => {
     // Cleanup
     return () => {
       window.removeEventListener('pwa-shortcut', handlePWAShortcut);
-      pwaManagerRef.current?.destroy();
+      manager?.destroy();
     };
   }, []);
 
@@ -93,7 +94,8 @@ const App: React.FC = () => {
       home: (
         <HomeScreen
           onStartGame={() => navigateToScreen('game')}
-          pwaManager={pwaManagerRef.current || undefined}
+          onNavigate={(screen) => navigateToScreen(screen)}
+          pwaManager={pwaManager || undefined}
         />
       ),
       game: <GameScreen onNavigate={navigateToScreen} />,

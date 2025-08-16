@@ -55,6 +55,7 @@ export class PWAInstallManager {
 
     // Listen for install prompt
     window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('beforeinstallprompt event fired');
       e.preventDefault();
       this.deferredPrompt = e as BeforeInstallPromptEvent;
       this.updateInstallUI();
@@ -137,6 +138,10 @@ export class PWAInstallManager {
 
   async promptInstall() {
     if (!this.deferredPrompt) {
+      console.log(
+        'Install prompt not available. Showing manual install instructions.'
+      );
+      this.showManualInstallInstructions();
       return;
     }
 
@@ -157,6 +162,27 @@ export class PWAInstallManager {
     } catch (error) {
       console.error('Install prompt failed:', error);
     }
+  }
+
+  private showManualInstallInstructions() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    let instructions = '';
+
+    if (/chrome|chromium|crios/.test(userAgent)) {
+      instructions =
+        'To install this app:\n1. Click the menu (⋮) in Chrome\n2. Select "Install FastMath"\n3. Click "Install" in the dialog';
+    } else if (/firefox|fxios/.test(userAgent)) {
+      instructions =
+        'To install this app:\n1. Click the menu (☰) in Firefox\n2. Select "Install this site as an app"\n3. Follow the prompts';
+    } else if (/safari/.test(userAgent)) {
+      instructions =
+        'To add to home screen:\n1. Tap the Share button (⬆️)\n2. Select "Add to Home Screen"\n3. Tap "Add"';
+    } else {
+      instructions =
+        'To install this app, look for an "Install" or "Add to Home Screen" option in your browser menu.';
+    }
+
+    alert(instructions);
   }
 
   private showInstallSuccess() {
@@ -269,7 +295,15 @@ export class PWAInstallManager {
   }
 
   canInstall(): boolean {
-    return !!this.deferredPrompt && !this.isInstalled;
+    // Allow installation if not already installed, even without deferred prompt
+    const canInstall = !this.isInstalled && !this.isStandalone;
+    console.log('PWA canInstall check:', {
+      deferredPrompt: !!this.deferredPrompt,
+      isInstalled: this.isInstalled,
+      isStandalone: this.isStandalone,
+      canInstall,
+    });
+    return canInstall;
   }
 
   destroy() {
