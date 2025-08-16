@@ -41,7 +41,7 @@ export const NumberPad: React.FC<NumberPadProps> = ({
   }, [canSubmit]);
 
   return (
-    <div className="number-pad">
+    <div className="number-pad" data-testid="number-pad">
       {numbers.map((digit) => (
         <button
           key={digit}
@@ -65,6 +65,7 @@ export const NumberPad: React.FC<NumberPadProps> = ({
       
       <button
         className="submit-btn"
+        data-testid="submit-btn"
         onClick={onSubmit}
         disabled={!canSubmit}
       >

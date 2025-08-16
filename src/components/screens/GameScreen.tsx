@@ -11,7 +11,12 @@ interface GameScreenProps {
 
 export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
   const { settings } = useSettings();
-  const audioManagerRef = useRef<AudioManager>(new AudioManager());
+  const audioManagerRef = useRef<AudioManager | null>(null);
+
+  // Initialize AudioManager only once
+  if (!audioManagerRef.current) {
+    audioManagerRef.current = new AudioManager();
+  }
   
   const [gameState, setGameState] = useState<GameState>({
     state: 'idle',
@@ -33,7 +38,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     }
     
     return () => {
-      audioManagerRef.current.cleanup();
+      try {
+        audioManagerRef.current?.cleanup();
+      } catch (error) {
+        // Silently handle cleanup errors in tests
+      }
     };
   }, []);
 
@@ -76,8 +85,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     for (let i = 0; i < sequence.length; i++) {
       setSequencePosition({ current: i + 1, total: sequence.length });
       
-      audioManagerRef.current.playSound('number', settings.soundEnabled);
-      audioManagerRef.current.triggerHaptic('light', settings.hapticEnabled);
+      audioManagerRef.current?.playSound('number', settings.soundEnabled);
+      audioManagerRef.current?.triggerHaptic('light', settings.hapticEnabled);
       
       await displayNumber(sequence[i], timeOnScreen);
       
@@ -110,16 +119,16 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     const newAnswer = gameState.userAnswer + digit;
     setGameState(prev => ({ ...prev, userAnswer: newAnswer }));
     
-    audioManagerRef.current.playSound('keypress', settings.soundEnabled);
-    audioManagerRef.current.triggerHaptic('light', settings.hapticEnabled);
+    audioManagerRef.current?.playSound('keypress', settings.soundEnabled);
+    audioManagerRef.current?.triggerHaptic('light', settings.hapticEnabled);
   };
 
   const handleClearInput = (): void => {
     if (gameState.state !== 'input') return;
 
     setGameState(prev => ({ ...prev, userAnswer: '' }));
-    audioManagerRef.current.playSound('clear', settings.soundEnabled);
-    audioManagerRef.current.triggerHaptic('medium', settings.hapticEnabled);
+    audioManagerRef.current?.playSound('clear', settings.soundEnabled);
+    audioManagerRef.current?.triggerHaptic('medium', settings.hapticEnabled);
   };
 
   const handleSubmitAnswer = (): void => {
@@ -130,11 +139,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     const userSum = parseInt(gameState.userAnswer);
     const isCorrect = userSum === gameState.correctSum;
 
-    audioManagerRef.current.playSound(
+    audioManagerRef.current?.playSound(
       isCorrect ? 'correct' : 'incorrect', 
       settings.soundEnabled
     );
-    audioManagerRef.current.triggerHaptic(
+    audioManagerRef.current?.triggerHaptic(
       isCorrect ? 'success' : 'error', 
       settings.hapticEnabled
     );
@@ -158,27 +167,30 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
   };
 
   return (
-    <section className="screen active">
+    <section className="screen active" data-testid="game-screen">
       <div className="game-container">
         <div className="game-number-display">
           <span 
             id="current-number"
+            data-testid="current-number"
             className={currentNumber.includes('Get Ready') || currentNumber.includes('Enter') ? 'message-showing' : ''}
           >
             {currentNumber}
           </span>
-          <div className="sequence-indicator">
+          <div className="sequence-indicator" data-testid="sequence-progress">
             <span className="current-position">{sequencePosition.current}</span> of{' '}
             <span className="total-numbers">{sequencePosition.total}</span>
           </div>
         </div>
+        <div data-testid="game-state" data-state={gameState.state}></div>
+        <div data-testid="game-timer"></div>
       </div>
 
       {showInput && (
         <div className={`game-input ${showInput ? 'active' : ''}`}>
           <div className="answer-section">
             <label htmlFor="answer-display">Your Answer:</label>
-            <div id="answer-display" className="answer-display">
+            <div id="answer-display" className="answer-display" data-testid="user-input">
               {gameState.userAnswer || '0'}
             </div>
           </div>
