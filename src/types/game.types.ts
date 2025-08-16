@@ -14,6 +14,7 @@ export interface GameState {
   userAnswer: string;
   correctSum: number;
   startTime: number | null;
+  inputStartTime: number | null;
   endTime: number | null;
 }
 

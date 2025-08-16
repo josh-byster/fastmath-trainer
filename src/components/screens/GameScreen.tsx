@@ -32,6 +32,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     userAnswer: '',
     correctSum: 0,
     startTime: null,
+    inputStartTime: null,
     endTime: null,
   });
 
@@ -71,6 +72,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
       userAnswer: '',
       correctSum,
       startTime: Date.now(),
+      inputStartTime: null,
       endTime: null,
     });
 
@@ -83,8 +85,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     // Play sequence
     await playSequence(sequence);
 
-    // Switch to input mode
-    setGameState((prev) => ({ ...prev, state: 'input' }));
+    // Switch to input mode and start timing user input
+    const inputStartTime = Date.now();
+    setGameState((prev) => ({ ...prev, state: 'input', inputStartTime }));
     setShowInput(true);
     setCurrentNumber('--');
   };
@@ -151,7 +154,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     if (gameState.state !== 'input' || !gameState.userAnswer) return;
 
     const endTime = Date.now();
-    const responseTime = endTime - (gameState.startTime || 0);
+    const responseTime = endTime - (gameState.inputStartTime || 0);
     const userSum = parseInt(gameState.userAnswer);
     const isCorrect = userSum === gameState.correctSum;
 
