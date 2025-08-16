@@ -1,18 +1,18 @@
 import { AudioManager } from './utils/audioManager';
 
 // Mock navigator.vibrate
+const mockVibrate = jest.fn();
 Object.defineProperty(navigator, 'vibrate', {
   writable: true,
-  value: jest.fn(),
+  configurable: true,
+  value: mockVibrate,
 });
 
 describe('AudioManager', () => {
   let audioManager: AudioManager;
-  let mockVibrate: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockVibrate = navigator.vibrate as jest.Mock;
     audioManager = new AudioManager();
   });
 
