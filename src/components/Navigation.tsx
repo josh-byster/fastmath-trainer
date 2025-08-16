@@ -25,7 +25,7 @@ export const Navigation: React.FC<NavigationProps> = ({
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
     >
-      <nav className="nav-modern mx-4 mb-4">
+      <nav className="nav-modern">
         <div className="flex items-center justify-around p-2">
           {navItems.map(({ screen, label, icon: Icon }) => {
             const isActive = currentScreen === screen;

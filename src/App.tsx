@@ -61,7 +61,7 @@ const App: React.FC = () => {
   return (
     <ThemeProvider>
       <SettingsProvider>
-        <div className="min-h-screen relative overflow-hidden">
+        <div className="h-screen relative overflow-hidden flex flex-col">
           {/* Background Elements */}
           <div className="fixed inset-0 -z-10">
             <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float" />
@@ -71,7 +71,7 @@ const App: React.FC = () => {
 
           <Header onSettingsClick={() => navigateToScreen('settings')} />
           
-          <main className="relative z-10 pb-24">
+          <main className="relative z-10 flex-1 overflow-auto">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentScreen}
