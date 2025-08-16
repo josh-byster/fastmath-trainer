@@ -34,3 +34,4 @@ jobs:
           configPath: './lighthouserc.js'
           uploadArtifacts: true
           temporaryPublicStorage: true
+          artifactName: lighthouse-report
