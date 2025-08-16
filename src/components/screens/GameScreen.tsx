@@ -44,6 +44,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
         // Silently handle cleanup errors in tests
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const startGame = async (): Promise<void> => {

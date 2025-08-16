@@ -1,0 +1,4 @@
+src/components/js/
+build/
+node_modules/
+coverage/

@@ -15,7 +15,7 @@ export const NumberPad: React.FC<NumberPadProps> = ({
 }) => {
   const numbers = ['7', '8', '9', '4', '5', '6', '1', '2', '3'];
 
-  const handleKeyDown = (event: React.KeyboardEvent): void => {
+  const handleKeyDown = React.useCallback((event: KeyboardEvent): void => {
     const key = event.key;
 
     if (key >= '0' && key <= '9') {
@@ -31,14 +31,14 @@ export const NumberPad: React.FC<NumberPadProps> = ({
       event.preventDefault();
       onClear();
     }
-  };
+  }, [onNumberClick, onClear, onSubmit, canSubmit]);
 
   React.useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown as any);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown as any);
+      document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [canSubmit]);
+  }, [handleKeyDown]);
 
   return (
     <div className="number-pad" data-testid="number-pad">

@@ -32,9 +32,6 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
     onNavigate('game');
   };
 
-  const handleViewStats = (): void => {
-    onNavigate('stats');
-  };
 
   return (
     <section className="screen active" data-testid="results-screen">
