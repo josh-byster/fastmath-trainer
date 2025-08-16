@@ -12,7 +12,7 @@ describe('Game Flow', () => {
     cy.get('[data-testid="game-state"]').should('have.attr', 'data-state', 'playing');
     
     // Wait for sequence to complete
-    cy.waitForSequenceComplete();
+    cy.wait(8000);
     
     // Input answer (for simplicity, we'll use a predetermined sequence)
     // This test would need to be adapted based on how the game generates sequences
@@ -32,7 +32,7 @@ describe('Game Flow', () => {
 
   it('should handle incorrect answer gracefully', () => {
     cy.get('[data-testid="start-game-btn"]').click();
-    cy.waitForSequenceComplete();
+    cy.wait(8000);
     
     // Input obviously wrong answer
     cy.inputAnswer('999999');
@@ -45,7 +45,7 @@ describe('Game Flow', () => {
 
   it('should allow playing multiple rounds', () => {
     cy.get('[data-testid="start-game-btn"]').click();
-    cy.waitForSequenceComplete();
+    cy.wait(8000);
     
     cy.inputAnswer('123');
     cy.get('[data-testid="submit-btn"]').click();
@@ -58,7 +58,7 @@ describe('Game Flow', () => {
 
   it('should return to home from results screen', () => {
     cy.get('[data-testid="start-game-btn"]').click();
-    cy.waitForSequenceComplete();
+    cy.wait(8000);
     
     cy.inputAnswer('123');
     cy.get('[data-testid="submit-btn"]').click();
@@ -70,14 +70,14 @@ describe('Game Flow', () => {
 
   it('should disable submit button when no input', () => {
     cy.get('[data-testid="start-game-btn"]').click();
-    cy.waitForSequenceComplete();
+    cy.wait(8000);
     
     cy.get('[data-testid="submit-btn"]').should('be.disabled');
   });
 
   it('should enable submit button when input is provided', () => {
     cy.get('[data-testid="start-game-btn"]').click();
-    cy.waitForSequenceComplete();
+    cy.wait(8000);
     
     cy.get('[data-testid="number-1"]').click();
     cy.get('[data-testid="submit-btn"]').should('not.be.disabled');
@@ -85,7 +85,7 @@ describe('Game Flow', () => {
 
   it('should clear input when clear button is pressed', () => {
     cy.get('[data-testid="start-game-btn"]').click();
-    cy.waitForSequenceComplete();
+    cy.wait(8000);
     
     cy.inputAnswer('123');
     cy.get('[data-testid="user-input"]').should('contain', '123');

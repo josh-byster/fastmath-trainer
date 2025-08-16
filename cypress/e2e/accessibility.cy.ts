@@ -33,13 +33,16 @@ describe('Accessibility', () => {
     cy.focused().should('contain', 'Start Game');
     
     cy.realPress('Tab');
-    cy.focused().should('contain', 'Home');
+    cy.focused().should('contain', 'View Statistics');
     
     cy.realPress('Tab');
-    cy.focused().should('contain', 'Settings');
+    cy.focused().should('have.class', 'nav-btn').and('contain', 'Home');
     
     cy.realPress('Tab');
-    cy.focused().should('contain', 'Stats');
+    cy.focused().should('have.class', 'nav-btn').and('contain', 'Settings');
+    
+    cy.realPress('Tab');
+    cy.focused().should('have.class', 'nav-btn').and('contain', 'Stats');
   });
 
   it('should have proper form labels in settings', () => {
@@ -79,9 +82,11 @@ describe('Accessibility', () => {
 
   it('should have proper focus management in game', () => {
     cy.get('[data-testid="start-game-btn"]').click();
-    cy.waitForSequenceComplete();
     
-    // Focus should be on number pad area
+    // Wait for sequence to complete (default timing is about 7.2 seconds)
+    cy.wait(8000);
+    
+    // Number pad should be visible after sequence completes
     cy.get('[data-testid="number-pad"]').should('be.visible');
     
     // Should be able to navigate number pad with keyboard

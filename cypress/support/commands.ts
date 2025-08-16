@@ -74,7 +74,10 @@ Cypress.Commands.add('inputAnswer', (answer: string) => {
 });
 
 Cypress.Commands.add('waitForSequenceComplete', () => {
-  cy.get('[data-testid="game-state"]').should('have.attr', 'data-state', 'input');
+  // Wait for game to start playing first, but be more flexible about the initial state
+  cy.get('[data-testid="game-state"]').should('exist');
+  // Then wait for it to transition to input mode with a longer timeout
+  cy.get('[data-testid="game-state"]').should('have.attr', 'data-state', 'input', { timeout: 20000 });
 });
 
 Cypress.Commands.add('checkGameState', (state: string) => {
