@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Screen, GameResult } from './types/game.types';
 import { Header } from './components/Header';
@@ -12,11 +12,67 @@ import { SettingsProvider } from './services/SettingsContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { StatisticsProvider } from './contexts/StatisticsContext';
 import { ScoreResult } from './utils/scoringSystem';
+import { PWAInstallManager } from './utils/pwaInstallManager';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
   const [gameResult, setGameResult] = useState<GameResult | undefined>();
   const [scoreResult, setScoreResult] = useState<ScoreResult | undefined>();
+  const pwaManagerRef = useRef<PWAInstallManager | null>(null);
+
+  // Initialize PWA Install Manager
+  useEffect(() => {
+    pwaManagerRef.current = new PWAInstallManager();
+
+    // Handle PWA shortcuts
+    const handlePWAShortcut = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { action } = customEvent.detail;
+
+      if (action === 'quick-game') {
+        navigateToScreen('game');
+      } else if (action === 'stats') {
+        navigateToScreen('stats');
+      }
+    };
+
+    window.addEventListener('pwa-shortcut', handlePWAShortcut);
+
+    // Enhanced service worker registration with update handling
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then((registration) => {
+        // Listen for updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (
+                newWorker.state === 'installed' &&
+                navigator.serviceWorker.controller
+              ) {
+                // Show update available notification
+                pwaManagerRef.current?.showUpdateAvailable();
+              }
+            });
+          }
+        });
+      });
+
+      // Listen for service worker controller changes (after update)
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        // Show success notification
+        pwaManagerRef.current?.showUpdateNotification();
+        // Reload the page to get the latest version
+        window.location.reload();
+      });
+    }
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('pwa-shortcut', handlePWAShortcut);
+      pwaManagerRef.current?.destroy();
+    };
+  }, []);
 
   const navigateToScreen = (
     screen: Screen,

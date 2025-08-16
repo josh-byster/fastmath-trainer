@@ -1,22 +1,117 @@
 {
   "name": "FastMath - Mental Math Training",
   "short_name": "FastMath",
-  "description": "Train your mental arithmetic skills with configurable difficulty and timing",
+  "description": "Train your mental arithmetic skills with customizable number sequences",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F2F2F7",
   "theme_color": "#007AFF",
   "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-US",
+  "categories": ["education", "games", "productivity"],
   "icons": [
     {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-192x192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-512x512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Quick Game",
+      "short_name": "Play",
+      "description": "Start a game with default settings",
+      "url": "/?action=quick-game",
+      "icons": [
+        {
+          "src": "icons/shortcut-play.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Statistics",
+      "short_name": "Stats",
+      "description": "View your performance statistics",
+      "url": "/?action=stats",
+      "icons": [
+        {
+          "src": "icons/shortcut-stats.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icons/screenshot-mobile.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "platform": "mobile",
+      "label": "FastMath game screen"
+    },
+    {
+      "src": "icons/screenshot-wide.png",
+      "sizes": "1024x768",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "FastMath settings screen"
     }
   ]
 }
