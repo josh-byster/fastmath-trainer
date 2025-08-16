@@ -11,6 +11,7 @@ import {
   GameResultExtended,
   ScoreResult,
 } from '../utils/scoringSystem';
+import { GameLogic } from '../utils/gameLogic';
 import { AchievementNotification } from '../components/AchievementNotification';
 
 interface StatisticsContextType {
@@ -54,7 +55,31 @@ export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({
       throw new Error('Managers not initialized');
     }
 
-    const scoreResult = scoringSystemRef.current.calculateScore(gameResult);
+    // Use new GameLogic scoring instead of old ScoringSystem
+    const scoringData = GameLogic.calculateScore(
+      gameResult.userAnswer,
+      gameResult.correctAnswer,
+      gameResult.responseTime,
+      gameResult.settings
+    );
+
+    // Create ScoreResult in the format expected by StatisticsManager
+    const scoreResult: ScoreResult = {
+      score: scoringData.score,
+      breakdown: {
+        accuracy: scoringData.accuracyPercentage,
+        difficulty: scoringData.difficultyMultiplier * 100,
+        speed: scoringData.speedBonus,
+        total: scoringData.score,
+      },
+      multipliers: {
+        difficulty: scoringData.difficultyMultiplier,
+        accuracy: scoringData.accuracyPercentage / 100,
+        speed:
+          scoringData.speedBonus / (scoringData.difficultyMultiplier * 100),
+      },
+    };
+
     statisticsManagerRef.current.recordGame(gameResult, scoreResult);
 
     return scoreResult;
