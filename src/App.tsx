@@ -90,7 +90,12 @@ const App: React.FC = () => {
 
   const renderScreen = () => {
     const screenComponents = {
-      home: <HomeScreen onStartGame={() => navigateToScreen('game')} />,
+      home: (
+        <HomeScreen
+          onStartGame={() => navigateToScreen('game')}
+          pwaManager={pwaManagerRef.current || undefined}
+        />
+      ),
       game: <GameScreen onNavigate={navigateToScreen} />,
       settings: <SettingsScreen onNavigate={navigateToScreen} />,
       results: (

@@ -11,7 +11,6 @@ export class PWAInstallManager {
   private deferredPrompt: BeforeInstallPromptEvent | null = null;
   private isInstalled = false;
   private isStandalone = false;
-  private installButton: HTMLButtonElement | null = null;
 
   constructor() {
     this.init();
@@ -70,42 +69,10 @@ export class PWAInstallManager {
       this.showInstallSuccess();
     });
 
-    // Create install button
-    this.createInstallButton();
-  }
-
-  private createInstallButton() {
-    // Guard against environments where document is not available
-    if (typeof document === 'undefined') return;
-
-    const installBtn = document.createElement('button');
-    installBtn.className = 'install-btn btn btn-primary';
-    installBtn.innerHTML = '📱 Install App';
-    installBtn.style.display = 'none';
-    installBtn.setAttribute('aria-label', 'Install FastMath as an app');
-
-    installBtn.addEventListener('click', () => {
-      this.promptInstall();
-    });
-
-    // Add to header or appropriate location
-    const header = document.querySelector('.app-header') || document.body;
-    if (header) {
-      header.appendChild(installBtn);
-    }
-
-    this.installButton = installBtn;
+    // No longer auto-create install button - will be handled by HomeScreen
   }
 
   private updateInstallUI() {
-    if (this.installButton) {
-      if (this.deferredPrompt && !this.isInstalled) {
-        this.installButton.style.display = 'inline-flex';
-      } else {
-        this.installButton.style.display = 'none';
-      }
-    }
-
     // Update any install prompts or banners
     this.updateInstallBanner();
   }
@@ -306,11 +273,7 @@ export class PWAInstallManager {
   }
 
   destroy() {
-    // Clean up event listeners and DOM elements
-    if (this.installButton?.parentNode) {
-      this.installButton.parentNode.removeChild(this.installButton);
-    }
-
+    // Clean up DOM elements
     // Remove any banners
     const banners = document.querySelectorAll(
       '.ios-install-banner, .update-notification'

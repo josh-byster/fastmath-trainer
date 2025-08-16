@@ -1,15 +1,26 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, TrendingUp, Brain } from 'lucide-react';
+import { Play, TrendingUp, Brain, Download } from 'lucide-react';
+import { PWAInstallManager } from '../../utils/pwaInstallManager';
 
 interface HomeScreenProps {
   onStartGame: () => void;
+  pwaManager?: PWAInstallManager;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ onStartGame }) => {
+export const HomeScreen: React.FC<HomeScreenProps> = ({
+  onStartGame,
+  pwaManager,
+}) => {
   const handleViewStats = (): void => {
     // TODO: Navigate to stats screen
     console.log('View statistics clicked');
+  };
+
+  const handleInstallApp = (): void => {
+    if (pwaManager) {
+      pwaManager.promptInstall();
+    }
   };
 
   const containerVariants = {
@@ -104,6 +115,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onStartGame }) => {
             <TrendingUp className="w-5 h-5" />
             View Statistics
           </motion.button>
+
+          {pwaManager && pwaManager.canInstall() && (
+            <motion.button
+              className="btn-secondary-modern flex items-center justify-center gap-3"
+              onClick={handleInstallApp}
+              whileHover={{ transform: 'scale3d(1.05, 1.05, 1)' }}
+              whileTap={{ transform: 'scale3d(0.95, 0.95, 1)' }}
+              transition={{
+                type: 'spring',
+                stiffness: 500,
+                damping: 25,
+                mass: 0.5,
+              }}
+              style={{ willChange: 'transform' }}
+            >
+              <Download className="w-5 h-5" />
+              Install App
+            </motion.button>
+          )}
         </motion.div>
       </motion.div>
     </section>
