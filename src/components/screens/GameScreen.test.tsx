@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { GameScreen } from './GameScreen';
 import { SettingsProvider } from '../../services/SettingsContext';
+import { StatisticsProvider } from '../../contexts/StatisticsContext';
 
 // Mock AudioManager
 jest.mock('../../utils/audioManager', () => ({
@@ -23,7 +24,9 @@ describe('GameScreen', () => {
   const renderGameScreen = () => {
     return render(
       <SettingsProvider>
-        <GameScreen onNavigate={mockOnNavigate} />
+        <StatisticsProvider>
+          <GameScreen onNavigate={mockOnNavigate} />
+        </StatisticsProvider>
       </SettingsProvider>
     );
   };

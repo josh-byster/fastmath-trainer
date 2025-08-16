@@ -10,14 +10,20 @@ import { ResultsScreen } from './components/screens/ResultsScreen';
 import { StatsScreen } from './components/screens/StatsScreen';
 import { SettingsProvider } from './services/SettingsContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { StatisticsProvider } from './contexts/StatisticsContext';
+import { ScoreResult } from './utils/scoringSystem';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
   const [gameResult, setGameResult] = useState<GameResult | undefined>();
+  const [scoreResult, setScoreResult] = useState<ScoreResult | undefined>();
 
-  const navigateToScreen = (screen: Screen, result?: GameResult) => {
+  const navigateToScreen = (screen: Screen, result?: GameResult, score?: ScoreResult) => {
     if (result) {
       setGameResult(result);
+    }
+    if (score) {
+      setScoreResult(score);
     }
     setCurrentScreen(screen);
   };
@@ -27,7 +33,7 @@ const App: React.FC = () => {
       home: <HomeScreen onStartGame={() => navigateToScreen('game')} />,
       game: <GameScreen onNavigate={navigateToScreen} />,
       settings: <SettingsScreen onNavigate={navigateToScreen} />,
-      results: <ResultsScreen onNavigate={navigateToScreen} result={gameResult} />,
+      results: <ResultsScreen onNavigate={navigateToScreen} result={gameResult} scoreResult={scoreResult} />,
       stats: <StatsScreen onNavigate={navigateToScreen} />
     };
 
@@ -61,6 +67,7 @@ const App: React.FC = () => {
   return (
     <ThemeProvider>
       <SettingsProvider>
+        <StatisticsProvider>
         <div className="h-screen relative overflow-hidden flex flex-col">
           {/* Background Elements */}
           <div className="fixed inset-0 -z-10">
@@ -95,6 +102,7 @@ const App: React.FC = () => {
             Game state updates will be announced here
           </div>
         </div>
+        </StatisticsProvider>
       </SettingsProvider>
     </ThemeProvider>
   );

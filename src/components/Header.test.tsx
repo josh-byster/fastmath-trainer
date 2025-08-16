@@ -2,23 +2,32 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Header } from './Header';
+import { ThemeProvider } from '../contexts/ThemeContext';
 
 describe('Header', () => {
   const mockOnSettingsClick = jest.fn();
+
+  const renderHeader = () => {
+    return render(
+      <ThemeProvider>
+        <Header onSettingsClick={mockOnSettingsClick} />
+      </ThemeProvider>
+    );
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('renders the app title', () => {
-    render(<Header onSettingsClick={mockOnSettingsClick} />);
+    renderHeader();
     
     expect(screen.getByText('FastMath')).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('FastMath');
   });
 
   it('renders the settings button with correct aria-label', () => {
-    render(<Header onSettingsClick={mockOnSettingsClick} />);
+    renderHeader();
     
     const settingsButton = screen.getByRole('button', { name: 'Settings' });
     expect(settingsButton).toBeInTheDocument();
@@ -26,7 +35,7 @@ describe('Header', () => {
   });
 
   it('calls onSettingsClick when settings button is clicked', () => {
-    render(<Header onSettingsClick={mockOnSettingsClick} />);
+    renderHeader();
     
     const settingsButton = screen.getByRole('button', { name: 'Settings' });
     fireEvent.click(settingsButton);
@@ -35,7 +44,7 @@ describe('Header', () => {
   });
 
   it('has correct CSS classes', () => {
-    render(<Header onSettingsClick={mockOnSettingsClick} />);
+    renderHeader();
     
     const header = screen.getByRole('banner');
     expect(header).toHaveClass('app-header');
@@ -48,7 +57,7 @@ describe('Header', () => {
   });
 
   it('renders settings button with gear emoji', () => {
-    render(<Header onSettingsClick={mockOnSettingsClick} />);
+    renderHeader();
     
     const settingsButton = screen.getByRole('button', { name: 'Settings' });
     expect(settingsButton).toHaveTextContent('⚙️');

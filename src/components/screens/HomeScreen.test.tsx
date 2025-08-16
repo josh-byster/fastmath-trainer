@@ -57,8 +57,8 @@ describe('HomeScreen', () => {
   it('has correct CSS classes applied', () => {
     render(<HomeScreen onStartGame={mockOnStartGame} />);
     
-    const section = document.querySelector('.screen.active');
+    const section = screen.getByRole('region');
     expect(section).toBeInTheDocument();
-    expect(section).toHaveClass('screen', 'active');
+    expect(section).toHaveClass('screen-modern');
   });
 });

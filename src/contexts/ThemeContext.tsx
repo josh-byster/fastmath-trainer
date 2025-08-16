@@ -24,7 +24,10 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(() => {
     const savedTheme = localStorage.getItem('theme') as Theme;
-    return savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (savedTheme) return savedTheme;
+    
+    const mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)');
+    return mediaQuery?.matches ? 'dark' : 'light';
   });
 
   useEffect(() => {

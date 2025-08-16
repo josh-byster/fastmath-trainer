@@ -1,15 +1,19 @@
 import React from 'react';
 import { Screen, GameResult } from '../../types/game.types';
 import { GameLogic } from '../../utils/gameLogic';
+import { ScoreResult } from '../../utils/scoringSystem';
+import { ScoringSystem } from '../../utils/scoringSystem';
 
 interface ResultsScreenProps {
   onNavigate: (screen: Screen) => void;
   result?: GameResult;
+  scoreResult?: ScoreResult;
 }
 
 export const ResultsScreen: React.FC<ResultsScreenProps> = ({ 
   onNavigate, 
-  result 
+  result,
+  scoreResult
 }) => {
   if (!result) {
     return (
@@ -34,6 +38,8 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
     onNavigate('game');
   };
 
+  const scoringSystem = new ScoringSystem();
+  const rank = scoringSystem.getRankForScore(result.score);
 
   return (
     <div className="screen-modern pb-24" data-testid="results-screen">
@@ -51,13 +57,48 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
             }`}>
               {result.isCorrect ? 'Correct!' : 'Incorrect'}
             </h3>
-            <div className="flex items-center justify-center space-x-2">
+            <div className="flex items-center justify-center space-x-2 mb-4">
               <span className="text-lg font-medium text-slate-600 dark:text-slate-300">Score:</span>
               <span className="score-display text-2xl font-bold" data-testid="score">
                 {result.score}
               </span>
             </div>
+            <div className="flex items-center justify-center space-x-2">
+              <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Rank:</span>
+              <span 
+                className="px-3 py-1 rounded-full text-sm font-bold text-white"
+                style={{ backgroundColor: rank.color }}
+              >
+                {rank.name}
+              </span>
+            </div>
           </div>
+
+          {scoreResult && (
+            <div className="mb-6">
+              <h4 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-3">Score Breakdown</h4>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="glass rounded-lg p-3 text-center">
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    {scoreResult.breakdown.difficulty.toFixed(1)}%
+                  </div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400">Difficulty</div>
+                </div>
+                <div className="glass rounded-lg p-3 text-center">
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                    {scoreResult.breakdown.accuracy.toFixed(1)}%
+                  </div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400">Accuracy</div>
+                </div>
+                <div className="glass rounded-lg p-3 text-center">
+                  <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                    {scoreResult.breakdown.speed.toFixed(1)}%
+                  </div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400">Speed</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -94,7 +135,7 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
                 <div className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
                   Sequence:
                 </div>
-                <div className="text-lg font-semibold text-slate-700 dark:text-slate-200 font-mono">
+                <div className="text-lg font-semibold text-slate-700 dark:text-slate-200 font-mono break-all">
                   {GameLogic.formatSequence(result.sequence)}
                 </div>
               </div>

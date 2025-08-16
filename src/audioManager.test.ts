@@ -1,13 +1,5 @@
 import { AudioManager } from './utils/audioManager';
 
-// Mock navigator.vibrate
-const mockVibrate = jest.fn();
-Object.defineProperty(navigator, 'vibrate', {
-  writable: true,
-  configurable: true,
-  value: mockVibrate,
-});
-
 describe('AudioManager', () => {
   let audioManager: AudioManager;
 
@@ -25,28 +17,28 @@ describe('AudioManager', () => {
   describe('triggerHaptic', () => {
     it('should not vibrate when disabled', () => {
       audioManager.triggerHaptic('light', false);
-      expect(mockVibrate).not.toHaveBeenCalled();
+      expect(navigator.vibrate).not.toHaveBeenCalled();
     });
 
     it('should vibrate when enabled', () => {
       audioManager.triggerHaptic('light', true);
-      expect(mockVibrate).toHaveBeenCalledWith([10]);
+      expect(navigator.vibrate).toHaveBeenCalledWith([10]);
     });
 
     it('should use different patterns for different intensities', () => {
       audioManager.triggerHaptic('medium', true);
-      expect(mockVibrate).toHaveBeenCalledWith([20]);
+      expect(navigator.vibrate).toHaveBeenCalledWith([20]);
 
       audioManager.triggerHaptic('success', true);
-      expect(mockVibrate).toHaveBeenCalledWith([10, 50, 10]);
+      expect(navigator.vibrate).toHaveBeenCalledWith([10, 50, 10]);
 
       audioManager.triggerHaptic('error', true);
-      expect(mockVibrate).toHaveBeenCalledWith([100, 50, 100]);
+      expect(navigator.vibrate).toHaveBeenCalledWith([100, 50, 100]);
     });
 
     it('should fallback to light pattern for unknown intensity', () => {
       audioManager.triggerHaptic('unknown' as any, true);
-      expect(mockVibrate).toHaveBeenCalledWith([10]);
+      expect(navigator.vibrate).toHaveBeenCalledWith([10]);
     });
   });
 

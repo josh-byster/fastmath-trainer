@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Screen, GameState, GameResult } from '../../types/game.types';
 import { useSettings } from '../../services/SettingsContext';
+import { useStatistics } from '../../contexts/StatisticsContext';
 import { GameLogic } from '../../utils/gameLogic';
 import { AudioManager } from '../../utils/audioManager';
 import { NumberPad } from '../game/NumberPad';
+import { GameResultExtended, ScoreResult } from '../../utils/scoringSystem';
 
 interface GameScreenProps {
-  onNavigate: (screen: Screen, result?: GameResult) => void;
+  onNavigate: (screen: Screen, result?: GameResult, scoreResult?: ScoreResult) => void;
 }
 
 export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
   const { settings } = useSettings();
+  const { recordGame } = useStatistics();
   const audioManagerRef = useRef<AudioManager | null>(null);
 
   // Initialize AudioManager only once
@@ -149,12 +152,28 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
       settings.hapticEnabled
     );
 
+    // Create extended game result for statistics
+    const gameResultExtended: GameResultExtended = {
+      isCorrect,
+      userAnswer: userSum,
+      correctAnswer: gameState.correctSum,
+      responseTime,
+      score: 0, // Will be calculated by scoring system
+      sequence: gameState.currentSequence,
+      settings,
+      mistakes: 0 // Could be enhanced to track input mistakes
+    };
+
+    // Calculate score and record statistics
+    const scoreResult = recordGame(gameResultExtended);
+
+    // Create basic result for navigation
     const result: GameResult = {
       isCorrect,
       userAnswer: userSum,
       correctAnswer: gameState.correctSum,
       responseTime,
-      score: GameLogic.calculateScore(isCorrect, responseTime),
+      score: scoreResult.score,
       sequence: gameState.currentSequence,
     };
 
@@ -163,7 +182,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
 
     // Navigate to results after brief delay
     setTimeout(() => {
-      onNavigate('results', result);
+      onNavigate('results', result, scoreResult);
     }, 1000);
   };
 

@@ -2,43 +2,52 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StatsScreen } from './StatsScreen';
+import { StatisticsProvider } from '../../contexts/StatisticsContext';
 
 describe('StatsScreen', () => {
   const mockOnNavigate = jest.fn();
+
+  const renderStatsScreen = () => {
+    return render(
+      <StatisticsProvider>
+        <StatsScreen onNavigate={mockOnNavigate} />
+      </StatisticsProvider>
+    );
+  };
 
   beforeEach(() => {
     mockOnNavigate.mockClear();
   });
 
   it('renders the statistics title', () => {
-    render(<StatsScreen onNavigate={mockOnNavigate} />);
+    renderStatsScreen();
     
-    expect(screen.getByText('Statistics')).toBeInTheDocument();
+    expect(screen.getByText('Your Progress')).toBeInTheDocument();
   });
 
-  it('displays placeholder content', () => {
-    render(<StatsScreen onNavigate={mockOnNavigate} />);
+  it('displays placeholder content when no data', () => {
+    renderStatsScreen();
     
-    expect(screen.getByText('Statistics feature coming soon!')).toBeInTheDocument();
+    expect(screen.getByText('No Statistics Yet')).toBeInTheDocument();
     expect(screen.getByText('Play some games to see your progress here.')).toBeInTheDocument();
   });
 
   it('renders return home button', () => {
-    render(<StatsScreen onNavigate={mockOnNavigate} />);
+    renderStatsScreen();
     
     const homeButton = screen.getByText('Return Home');
     expect(homeButton).toBeInTheDocument();
   });
 
   it('renders start game button', () => {
-    render(<StatsScreen onNavigate={mockOnNavigate} />);
+    renderStatsScreen();
     
     const gameButton = screen.getByText('Start Game');
     expect(gameButton).toBeInTheDocument();
   });
 
   it('navigates to home when return home button is clicked', () => {
-    render(<StatsScreen onNavigate={mockOnNavigate} />);
+    renderStatsScreen();
     
     const homeButton = screen.getByText('Return Home');
     fireEvent.click(homeButton);
@@ -47,7 +56,7 @@ describe('StatsScreen', () => {
   });
 
   it('navigates to game when start game button is clicked', () => {
-    render(<StatsScreen onNavigate={mockOnNavigate} />);
+    renderStatsScreen();
     
     const gameButton = screen.getByText('Start Game');
     fireEvent.click(gameButton);
@@ -55,11 +64,9 @@ describe('StatsScreen', () => {
     expect(mockOnNavigate).toHaveBeenCalledWith('game');
   });
 
-  it('has correct CSS classes applied', () => {
-    render(<StatsScreen onNavigate={mockOnNavigate} />);
+  it('renders export data button', () => {
+    renderStatsScreen();
     
-    const section = document.querySelector('.screen.active');
-    expect(section).toBeInTheDocument();
-    expect(section).toHaveClass('screen', 'active');
+    expect(screen.getByText('Export Data')).toBeInTheDocument();
   });
 });

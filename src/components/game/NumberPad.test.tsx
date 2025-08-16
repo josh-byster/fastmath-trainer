@@ -197,10 +197,10 @@ describe('NumberPad', () => {
     expect(numberPad).toBeInTheDocument();
 
     const clearButton = screen.getByText('Clear');
-    expect(clearButton).toHaveClass('clear-btn');
+    expect(clearButton).toHaveClass('clear-key');
 
     const submitButton = screen.getByText('✓');
-    expect(submitButton).toHaveClass('submit-btn');
+    expect(submitButton).toHaveClass('submit-key');
 
     const numberButtons = screen.getAllByText(/^[0-9]$/);
     numberButtons.forEach(button => {

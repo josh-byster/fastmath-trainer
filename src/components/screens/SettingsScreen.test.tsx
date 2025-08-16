@@ -82,8 +82,8 @@ describe('SettingsScreen', () => {
   it('has correct CSS classes applied', () => {
     renderSettingsScreen(mockOnNavigate);
     
-    const section = document.querySelector('.screen.active');
+    const section = screen.getByTestId('settings-screen');
     expect(section).toBeInTheDocument();
-    expect(section).toHaveClass('screen', 'active');
+    expect(section).toHaveClass('screen-modern');
   });
 });

@@ -3,31 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import App from './App';
 
-// Mock AudioContext for tests
-const mockAudioContext = {
-  createOscillator: jest.fn().mockReturnValue({
-    connect: jest.fn(),
-    frequency: { value: 0 },
-    type: 'sine',
-    start: jest.fn(),
-    stop: jest.fn(),
-  }),
-  createGain: jest.fn().mockReturnValue({
-    connect: jest.fn(),
-    gain: {
-      setValueAtTime: jest.fn(),
-      exponentialRampToValueAtTime: jest.fn(),
-    },
-  }),
-  destination: {},
-  currentTime: 0,
-  state: 'running',
-  close: jest.fn(),
-};
-
-global.AudioContext = jest.fn().mockImplementation(() => mockAudioContext);
-(global as any).webkitAudioContext = jest.fn().mockImplementation(() => mockAudioContext);
-
 describe('App', () => {
   it('renders the main app structure', () => {
     render(<App />);
@@ -78,7 +53,7 @@ describe('App', () => {
   it('renders accessibility announcements area', () => {
     render(<App />);
     
-    const announcements = document.getElementById('announcements');
+    const announcements = screen.getByRole('status');
     expect(announcements).toBeInTheDocument();
     expect(announcements).toHaveAttribute('aria-live', 'polite');
     expect(announcements).toHaveAttribute('aria-atomic', 'true');
