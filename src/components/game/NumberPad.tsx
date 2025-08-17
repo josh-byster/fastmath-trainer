@@ -13,25 +13,28 @@ export const NumberPad: React.FC<NumberPadProps> = ({
   onSubmit,
   canSubmit,
 }) => {
-  const numbers = ['7', '8', '9', '4', '5', '6', '1', '2', '3'];
+  const numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-  const handleKeyDown = React.useCallback((event: KeyboardEvent): void => {
-    const key = event.key;
+  const handleKeyDown = React.useCallback(
+    (event: KeyboardEvent): void => {
+      const key = event.key;
 
-    if (key >= '0' && key <= '9') {
-      event.preventDefault();
-      onNumberClick(key);
-    } else if (key === 'Backspace' || key === 'Delete') {
-      event.preventDefault();
-      onClear();
-    } else if (key === 'Enter' && canSubmit) {
-      event.preventDefault();
-      onSubmit();
-    } else if (key === 'Escape') {
-      event.preventDefault();
-      onClear();
-    }
-  }, [onNumberClick, onClear, onSubmit, canSubmit]);
+      if (key >= '0' && key <= '9') {
+        event.preventDefault();
+        onNumberClick(key);
+      } else if (key === 'Backspace' || key === 'Delete') {
+        event.preventDefault();
+        onClear();
+      } else if (key === 'Enter' && canSubmit) {
+        event.preventDefault();
+        onSubmit();
+      } else if (key === 'Escape') {
+        event.preventDefault();
+        onClear();
+      }
+    },
+    [onNumberClick, onClear, onSubmit, canSubmit]
+  );
 
   React.useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -41,7 +44,10 @@ export const NumberPad: React.FC<NumberPadProps> = ({
   }, [handleKeyDown]);
 
   return (
-    <div className="grid grid-cols-3 gap-4 max-w-xs mx-auto" data-testid="number-pad">
+    <div
+      className="grid grid-cols-3 gap-4 max-w-xs mx-auto"
+      data-testid="number-pad"
+    >
       {numbers.map((digit) => (
         <button
           key={digit}
@@ -52,21 +58,23 @@ export const NumberPad: React.FC<NumberPadProps> = ({
           {digit}
         </button>
       ))}
-      
+
       <button className="clear-key" data-testid="clear-btn" onClick={onClear}>
         Clear
       </button>
-      
-      <button 
-        className="number-key" 
+
+      <button
+        className="number-key"
         data-testid="number-0"
         onClick={() => onNumberClick('0')}
       >
         0
       </button>
-      
+
       <button
-        className={`submit-key ${!canSubmit ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`submit-key ${
+          !canSubmit ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
         data-testid="submit-btn"
         onClick={onSubmit}
         disabled={!canSubmit}
