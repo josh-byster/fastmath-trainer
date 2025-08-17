@@ -119,8 +119,9 @@
 
   /* Input Panel Backdrop - positioned relative to viewport for full coverage */
   .game-input-backdrop {
-    @apply fixed inset-0 bg-white dark:bg-gray-900 z-40;
-    /* Fully opaque background */
+    @apply fixed inset-0 z-40;
+    /* Transparent backdrop to maintain gradient background */
+    background: transparent;
     backdrop-filter: none;
   }
 
