@@ -36,7 +36,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     endTime: null,
   });
 
-  const [currentNumber, setCurrentNumber] = useState<string>('--');
+  const [currentNumber, setCurrentNumber] = useState<string>('');
   const [sequencePosition, setSequencePosition] = useState({
     current: 1,
     total: 5,
@@ -89,7 +89,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     const inputStartTime = Date.now();
     setGameState((prev) => ({ ...prev, state: 'input', inputStartTime }));
     setShowInput(true);
-    setCurrentNumber('--');
+    setCurrentNumber('');
   };
 
   const playSequence = async (sequence: number[]): Promise<void> => {
@@ -104,12 +104,12 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
       await displayNumber(sequence[i], timeOnScreen);
 
       if (i < sequence.length - 1) {
-        setCurrentNumber('--');
+        setCurrentNumber('');
         await delay(timeBetween);
       }
     }
 
-    setCurrentNumber('--');
+    setCurrentNumber('');
   };
 
   const displayNumber = async (
@@ -228,7 +228,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
                   currentNumber.includes('Enter')
                     ? 'text-2xl font-medium'
                     : 'text-6xl font-bold'
-                } transition-all duration-300`}
+                }`}
               >
                 {currentNumber}
               </span>

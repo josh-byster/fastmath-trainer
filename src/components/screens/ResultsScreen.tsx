@@ -66,7 +66,11 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
                 Score:
               </span>
               <span
-                className="score-display text-2xl font-bold"
+                className={`text-2xl font-bold ${
+                  result.isCorrect
+                    ? 'score-display'
+                    : 'bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent'
+                }`}
                 data-testid="score"
               >
                 {result.score}
@@ -89,30 +93,51 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
             <h4 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-3">
               Score Breakdown
             </h4>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="glass rounded-lg p-3 text-center">
-                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  {(result.difficultyMultiplier * 100).toFixed(1)}%
+                <div
+                  className={`text-2xl font-bold ${
+                    result.isCorrect
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-slate-500 dark:text-slate-400'
+                  }`}
+                >
+                  {Math.round(
+                    result.difficultyMultiplier *
+                      100 *
+                      (result.accuracyPercentage / 100)
+                  )}
                 </div>
                 <div className="text-xs text-slate-600 dark:text-slate-400">
-                  Difficulty
+                  Accuracy Points
                 </div>
               </div>
               <div className="glass rounded-lg p-3 text-center">
-                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-                  {result.accuracyPercentage.toFixed(1)}%
+                <div
+                  className={`text-2xl font-bold ${
+                    result.speedBonus > 0
+                      ? 'text-purple-600 dark:text-purple-400'
+                      : 'text-slate-500 dark:text-slate-400'
+                  }`}
+                >
+                  {result.speedBonus}
                 </div>
                 <div className="text-xs text-slate-600 dark:text-slate-400">
-                  Accuracy
+                  Speed Bonus
                 </div>
               </div>
-              <div className="glass rounded-lg p-3 text-center">
-                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                  {result.speedBonus.toFixed(0)}
-                </div>
-                <div className="text-xs text-slate-600 dark:text-slate-400">
-                  Speed
-                </div>
+            </div>
+            <div className="glass rounded-lg p-3 text-center bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border border-yellow-200 dark:border-yellow-700">
+              <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">
+                {Math.round(
+                  result.difficultyMultiplier *
+                    100 *
+                    (result.accuracyPercentage / 100)
+                )}{' '}
+                + {result.speedBonus} =
+              </div>
+              <div className="text-2xl font-bold text-yellow-800 dark:text-yellow-200">
+                {result.score} Points
               </div>
             </div>
           </div>
@@ -123,13 +148,7 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
                 <div className="text-sm font-medium text-slate-600 dark:text-slate-300 mb-2">
                   Your Answer:
                 </div>
-                <div
-                  className={`text-xl font-bold ${
-                    result.isCorrect
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-red-600 dark:text-red-400'
-                  }`}
-                >
+                <div className="text-xl font-bold text-slate-700 dark:text-slate-200">
                   {result.userAnswer}
                 </div>
               </div>
