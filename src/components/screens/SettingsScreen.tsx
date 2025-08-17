@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Screen } from '../../types/game.types';
 import { useSettings } from '../../services/SettingsContext';
 import { GameLogic } from '../../utils/gameLogic';
+import { AudioManager } from '../../utils/audioManager';
 
 interface SettingsScreenProps {
   onNavigate: (screen: Screen) => void;
@@ -11,6 +12,10 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   onNavigate,
 }) => {
   const { settings, updateSettings, resetSettings } = useSettings();
+  const [availableVoices, setAvailableVoices] = useState<
+    SpeechSynthesisVoice[]
+  >([]);
+  const [audioManager] = useState(() => new AudioManager());
 
   const handleTimeOnScreenChange = (value: string): void => {
     updateSettings({ timeOnScreen: parseInt(value) });
@@ -39,6 +44,34 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   const handleHapticToggle = (): void => {
     updateSettings({ hapticEnabled: !settings.hapticEnabled });
   };
+
+  const handleVoiceToggle = (): void => {
+    updateSettings({ voiceEnabled: !settings.voiceEnabled });
+  };
+
+  const handleSpeechRateChange = (value: string): void => {
+    updateSettings({ speechRate: parseFloat(value) });
+  };
+
+  const handleVoiceChange = (voiceURI: string): void => {
+    updateSettings({ voiceURI });
+  };
+
+  const handleTestVoice = async (): Promise<void> => {
+    if (settings.voiceEnabled) {
+      await audioManager.speakNumber(
+        1234,
+        true,
+        settings.speechRate,
+        settings.voiceURI
+      );
+    }
+  };
+
+  useEffect(() => {
+    // Load available voices
+    audioManager.loadVoices().then(setAvailableVoices);
+  }, [audioManager]);
 
   const handleReset = (): void => {
     resetSettings();
@@ -292,6 +325,112 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 </label>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Voice Settings */}
+        <div className="settings-section">
+          <h3 className="text-xl font-semibold mb-4 text-slate-700 dark:text-slate-200">
+            Voice Narration
+          </h3>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                Voice Enabled
+              </label>
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  id="voice-enabled"
+                  data-testid="voice-toggle"
+                  checked={settings.voiceEnabled}
+                  onChange={handleVoiceToggle}
+                  className="sr-only"
+                />
+                <label
+                  htmlFor="voice-enabled"
+                  className={`flex items-center cursor-pointer w-12 h-6 rounded-full p-1 transition-colors duration-200 ${
+                    settings.voiceEnabled
+                      ? 'bg-blue-600'
+                      : 'bg-slate-300 dark:bg-slate-600'
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ${
+                      settings.voiceEnabled ? 'translate-x-6' : 'translate-x-0'
+                    }`}
+                  />
+                </label>
+              </div>
+            </div>
+
+            {settings.voiceEnabled && (
+              <>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="speech-rate"
+                    className="block text-sm font-medium text-slate-600 dark:text-slate-300"
+                  >
+                    Speech Rate
+                  </label>
+                  <div className="flex items-center space-x-4">
+                    <input
+                      type="range"
+                      id="speech-rate"
+                      data-testid="speech-rate-slider"
+                      min="0.5"
+                      max="2.0"
+                      step="0.1"
+                      value={settings.speechRate}
+                      onChange={(e) => handleSpeechRateChange(e.target.value)}
+                      className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer slider-thumb"
+                    />
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200 min-w-[40px]">
+                      {settings.speechRate.toFixed(1)}x
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    How fast the numbers are spoken
+                  </p>
+                </div>
+
+                {availableVoices.length > 0 && (
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="voice-select"
+                      className="block text-sm font-medium text-slate-600 dark:text-slate-300"
+                    >
+                      Voice
+                    </label>
+                    <select
+                      id="voice-select"
+                      data-testid="voice-select"
+                      value={settings.voiceURI}
+                      onChange={(e) => handleVoiceChange(e.target.value)}
+                      className="w-full p-2 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200"
+                    >
+                      <option value="">Default Voice</option>
+                      {availableVoices.map((voice) => (
+                        <option key={voice.voiceURI} value={voice.voiceURI}>
+                          {voice.name} ({voice.lang})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                <div className="flex space-x-2">
+                  <button
+                    className="btn-secondary-modern text-sm px-4 py-2"
+                    onClick={handleTestVoice}
+                    disabled={!settings.voiceEnabled}
+                  >
+                    Test Voice
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

@@ -19,6 +19,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
   const { settings } = useSettings();
   const { recordGame } = useStatistics();
   const audioManagerRef = useRef<AudioManager | null>(null);
+  const gameStartingRef = useRef<boolean>(false);
 
   // Initialize AudioManager only once
   if (!audioManagerRef.current) {
@@ -43,81 +44,211 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
   });
   const [showInput, setShowInput] = useState(false);
 
+  const startGame = async (): Promise<void> => {
+    if (
+      gameState.state !== 'idle' ||
+      gameState.currentSequence.length > 0 ||
+      gameStartingRef.current
+    ) {
+      console.log(
+        '[GAME] Skipping startGame - game already in progress or starting'
+      );
+      return;
+    }
+
+    gameStartingRef.current = true;
+    console.log('[GAME] Starting new game');
+
+    try {
+      const sequence = GameLogic.generateSequence(
+        settings.digitCount,
+        settings.sequenceLength
+      );
+      const correctSum = GameLogic.calculateSum(sequence);
+
+      setGameState({
+        state: 'playing',
+        currentSequence: sequence,
+        currentIndex: 0,
+        userAnswer: '',
+        correctSum,
+        startTime: Date.now(),
+        inputStartTime: null,
+        endTime: null,
+      });
+
+      setSequencePosition({ current: 1, total: sequence.length });
+
+      // Show get ready message
+      await showMessage('Get Ready...', 1500);
+      await delay(500);
+
+      // Play sequence
+      await playSequence(sequence);
+
+      // Switch to input mode and start timing user input
+      const inputStartTime = Date.now();
+      setGameState((prev) => ({ ...prev, state: 'input', inputStartTime }));
+      setShowInput(true);
+      setCurrentNumber('');
+    } catch (error) {
+      console.error('[GAME] Error during game start:', error);
+    } finally {
+      gameStartingRef.current = false;
+    }
+  };
+
   useEffect(() => {
-    if (gameState.state === 'idle') {
+    if (
+      gameState.state === 'idle' &&
+      gameState.currentSequence.length === 0 &&
+      !gameStartingRef.current
+    ) {
+      console.log('[GAME] Starting new game from useEffect');
       startGame();
     }
 
     return () => {
       try {
         audioManagerRef.current?.cleanup();
+        // Reset the starting flag on cleanup
+        gameStartingRef.current = false;
       } catch (error) {
         // Silently handle cleanup errors in tests
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const startGame = async (): Promise<void> => {
-    const sequence = GameLogic.generateSequence(
-      settings.digitCount,
-      settings.sequenceLength
-    );
-    const correctSum = GameLogic.calculateSum(sequence);
-
-    setGameState({
-      state: 'playing',
-      currentSequence: sequence,
-      currentIndex: 0,
-      userAnswer: '',
-      correctSum,
-      startTime: Date.now(),
-      inputStartTime: null,
-      endTime: null,
-    });
-
-    setSequencePosition({ current: 1, total: sequence.length });
-
-    // Show get ready message
-    await showMessage('Get Ready...', 1500);
-    await delay(500);
-
-    // Play sequence
-    await playSequence(sequence);
-
-    // Switch to input mode and start timing user input
-    const inputStartTime = Date.now();
-    setGameState((prev) => ({ ...prev, state: 'input', inputStartTime }));
-    setShowInput(true);
-    setCurrentNumber('');
-  };
+  }, [gameState.state, gameState.currentSequence.length]);
 
   const playSequence = async (sequence: number[]): Promise<void> => {
     const { timeOnScreen, timeBetween } = settings;
+    const sequenceStartTime = performance.now();
+    console.log(
+      `[SEQUENCE] Starting sequence playback at ${sequenceStartTime.toFixed(
+        2
+      )}ms:`,
+      sequence
+    );
+    console.log(
+      `[SEQUENCE] Settings - timeOnScreen: ${timeOnScreen}ms, timeBetween: ${timeBetween}ms`
+    );
 
     for (let i = 0; i < sequence.length; i++) {
+      const numberStartTime = performance.now();
+      console.log(
+        `[SEQUENCE] Starting number ${i + 1}/${sequence.length} (${
+          sequence[i]
+        }) at ${numberStartTime.toFixed(2)}ms`
+      );
+
       setSequencePosition({ current: i + 1, total: sequence.length });
 
+      // Play sound effect (if enabled)
       audioManagerRef.current?.playSound('number', settings.soundEnabled);
       audioManagerRef.current?.triggerHaptic('light', settings.hapticEnabled);
 
+      // Display the number and wait for it to completely finish (both visual and audio)
       await displayNumber(sequence[i], timeOnScreen);
 
+      // Clear the display and pause between numbers
       if (i < sequence.length - 1) {
+        const clearTime = performance.now();
+        console.log(
+          `[SEQUENCE] Clearing display for number ${
+            sequence[i]
+          } at ${clearTime.toFixed(2)}ms`
+        );
         setCurrentNumber('');
+        console.log(
+          `[SEQUENCE] Starting pause of ${timeBetween}ms between numbers at ${performance
+            .now()
+            .toFixed(2)}ms`
+        );
         await delay(timeBetween);
+        console.log(
+          `[SEQUENCE] Pause finished at ${performance.now().toFixed(2)}ms`
+        );
       }
+
+      const numberEndTime = performance.now();
+      console.log(
+        `[SEQUENCE] Finished number ${i + 1}/${sequence.length} (${
+          sequence[i]
+        }) at ${numberEndTime.toFixed(2)}ms (total time: ${(
+          numberEndTime - numberStartTime
+        ).toFixed(2)}ms)`
+      );
     }
 
+    const sequenceEndTime = performance.now();
     setCurrentNumber('');
+    console.log(
+      `[SEQUENCE] Sequence playback completed at ${sequenceEndTime.toFixed(
+        2
+      )}ms (total duration: ${(sequenceEndTime - sequenceStartTime).toFixed(
+        2
+      )}ms)`
+    );
   };
 
   const displayNumber = async (
     number: number,
     duration: number
   ): Promise<void> => {
+    const displayStartTime = performance.now();
+    console.log(
+      `[DISPLAY] Starting display for number: ${number} at ${displayStartTime.toFixed(
+        2
+      )}ms (duration: ${duration}ms)`
+    );
+
+    // Set the visual number and keep it stable
     setCurrentNumber(number.toString());
-    await delay(duration);
+    console.log(
+      `[DISPLAY] Visual number set to: ${number} at ${performance
+        .now()
+        .toFixed(2)}ms`
+    );
+
+    if (settings.voiceEnabled) {
+      // Start TTS and wait for it to complete OR the visual duration, whichever is longer
+      console.log(
+        `[DISPLAY] Starting TTS for number: ${number} at ${performance
+          .now()
+          .toFixed(2)}ms`
+      );
+      const ttsPromise =
+        audioManagerRef.current?.speakNumber(
+          number,
+          settings.voiceEnabled,
+          settings.speechRate,
+          settings.voiceURI
+        ) || Promise.resolve();
+
+      // Wait for either the display duration OR TTS completion, whichever takes longer
+      // This ensures we don't cut off speech but also don't wait too long
+      const [ttsResult, delayResult] = await Promise.allSettled([
+        ttsPromise,
+        delay(duration),
+      ]);
+
+      console.log(
+        `[DISPLAY] TTS result: ${ttsResult.status}, Delay result: ${delayResult.status} for number: ${number}`
+      );
+    } else {
+      console.log(`[DISPLAY] TTS disabled for number: ${number}`);
+      // No TTS, just wait for visual duration
+      await delay(duration);
+    }
+
+    const displayEndTime = performance.now();
+    console.log(
+      `[DISPLAY] Display finished for number: ${number} at ${displayEndTime.toFixed(
+        2
+      )}ms (actual duration: ${(displayEndTime - displayStartTime).toFixed(
+        2
+      )}ms)`
+    );
   };
 
   const showMessage = async (

@@ -5,6 +5,9 @@ export interface GameSettings {
   timeBetween: number;
   soundEnabled: boolean;
   hapticEnabled: boolean;
+  voiceEnabled: boolean;
+  speechRate: number;
+  voiceURI: string;
 }
 
 export interface GameState {

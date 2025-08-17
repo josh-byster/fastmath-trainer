@@ -210,12 +210,45 @@ export class StatisticsManager {
 
   private getAllAvailableAchievements(gameRecord?: GameRecord): Achievement[] {
     return [
+      // Getting Started Achievements
       {
         id: 'first_game',
         name: 'First Steps',
         description: 'Complete your first game',
         condition: () => this.stats.totalGames >= 1,
       },
+      {
+        id: 'rookie',
+        name: 'Rookie',
+        description: 'Play 10 games',
+        condition: () => this.stats.totalGames >= 10,
+      },
+      {
+        id: 'veteran',
+        name: 'Veteran',
+        description: 'Play 50 games',
+        condition: () => this.stats.totalGames >= 50,
+      },
+      {
+        id: 'century',
+        name: 'Centurion',
+        description: 'Play 100 games',
+        condition: () => this.stats.totalGames >= 100,
+      },
+      {
+        id: 'marathon',
+        name: 'Marathon Master',
+        description: 'Play 500 games',
+        condition: () => this.stats.totalGames >= 500,
+      },
+      {
+        id: 'legend',
+        name: 'Legend',
+        description: 'Play 1000 games',
+        condition: () => this.stats.totalGames >= 1000,
+      },
+
+      // Accuracy Achievements
       {
         id: 'perfect_score',
         name: 'Perfect!',
@@ -224,11 +257,78 @@ export class StatisticsManager {
           gameRecord ? gameRecord.breakdown.accuracy === 100 : false,
       },
       {
+        id: 'perfectionist',
+        name: 'Perfectionist',
+        description: 'Get 3 perfect scores in a row',
+        condition: () => {
+          const recent = this.stats.gameHistory.slice(-3);
+          return (
+            recent.length === 3 &&
+            recent.every((g) => g.breakdown.accuracy === 100)
+          );
+        },
+      },
+      {
+        id: 'sharp_shooter',
+        name: 'Sharp Shooter',
+        description: 'Maintain 90% accuracy over 20 games',
+        condition: () => {
+          const recent = this.stats.gameHistory.slice(-20);
+          if (recent.length < 20) return false;
+          const correct = recent.filter((g) => g.isCorrect).length;
+          return correct / 20 >= 0.9;
+        },
+      },
+      {
+        id: 'sniper',
+        name: 'Sniper',
+        description: 'Maintain 95% accuracy over 50 games',
+        condition: () => {
+          const recent = this.stats.gameHistory.slice(-50);
+          if (recent.length < 50) return false;
+          const correct = recent.filter((g) => g.isCorrect).length;
+          return correct / 50 >= 0.95;
+        },
+      },
+
+      // Speed Achievements
+      {
         id: 'speed_demon',
         name: 'Speed Demon',
         description: 'Complete a game in under 2 seconds',
         condition: () => (gameRecord ? gameRecord.responseTime < 2000 : false),
       },
+      {
+        id: 'lightning',
+        name: 'Lightning Fast',
+        description: 'Complete a game in under 1 second',
+        condition: () => (gameRecord ? gameRecord.responseTime < 1000 : false),
+      },
+      {
+        id: 'consistent_speed',
+        name: 'Consistent Speed',
+        description: 'Complete 5 games in a row under 3 seconds',
+        condition: () => {
+          const recent = this.stats.gameHistory.slice(-5);
+          return (
+            recent.length === 5 && recent.every((g) => g.responseTime < 3000)
+          );
+        },
+      },
+      {
+        id: 'speed_machine',
+        name: 'Speed Machine',
+        description: 'Average under 2.5 seconds over 10 games',
+        condition: () => {
+          const recent = this.stats.gameHistory.slice(-10);
+          if (recent.length < 10) return false;
+          const avgTime =
+            recent.reduce((sum, g) => sum + g.responseTime, 0) / 10;
+          return avgTime < 2500;
+        },
+      },
+
+      // Streak Achievements
       {
         id: 'streak_5',
         name: 'On Fire',
@@ -242,16 +342,179 @@ export class StatisticsManager {
         condition: () => this.stats.currentStreak >= 10,
       },
       {
+        id: 'streak_25',
+        name: 'Dominator',
+        description: 'Get 25 correct answers in a row',
+        condition: () => this.stats.currentStreak >= 25,
+      },
+      {
+        id: 'streak_50',
+        name: 'Untouchable',
+        description: 'Get 50 correct answers in a row',
+        condition: () => this.stats.currentStreak >= 50,
+      },
+      {
+        id: 'streak_100',
+        name: 'Godlike',
+        description: 'Get 100 correct answers in a row',
+        condition: () => this.stats.currentStreak >= 100,
+      },
+
+      // Score Achievements
+      {
         id: 'high_scorer',
         name: 'High Scorer',
         description: 'Score over 1500 points',
         condition: () => (gameRecord ? gameRecord.score >= 1500 : false),
       },
       {
-        id: 'century',
-        name: 'Centurion',
-        description: 'Play 100 games',
-        condition: () => this.stats.totalGames >= 100,
+        id: 'elite_scorer',
+        name: 'Elite Scorer',
+        description: 'Score over 2000 points',
+        condition: () => (gameRecord ? gameRecord.score >= 2000 : false),
+      },
+      {
+        id: 'master_scorer',
+        name: 'Master Scorer',
+        description: 'Score over 2500 points',
+        condition: () => (gameRecord ? gameRecord.score >= 2500 : false),
+      },
+      {
+        id: 'score_collector',
+        name: 'Score Collector',
+        description: 'Accumulate 50,000 total points',
+        condition: () => this.stats.totalScore >= 50000,
+      },
+      {
+        id: 'point_millionaire',
+        name: 'Point Millionaire',
+        description: 'Accumulate 100,000 total points',
+        condition: () => this.stats.totalScore >= 100000,
+      },
+
+      // Difficulty-Based Achievements
+      {
+        id: 'hard_mode_hero',
+        name: 'Hard Mode Hero',
+        description: 'Complete 10 games on hard difficulty',
+        condition: () => {
+          const hardGames = this.stats.gameHistory.filter(
+            (g) => g.settings.digitCount >= 3 || g.settings.sequenceLength >= 8
+          );
+          return hardGames.length >= 10;
+        },
+      },
+      {
+        id: 'extreme_challenger',
+        name: 'Extreme Challenger',
+        description: 'Complete 5 games on extreme difficulty',
+        condition: () => {
+          const extremeGames = this.stats.gameHistory.filter(
+            (g) => g.settings.digitCount >= 4 || g.settings.sequenceLength >= 15
+          );
+          return extremeGames.length >= 5;
+        },
+      },
+      {
+        id: 'elite_warrior',
+        name: 'Elite Warrior',
+        description: 'Complete a game on elite difficulty',
+        condition: () => {
+          const eliteGames = this.stats.gameHistory.filter(
+            (g) =>
+              g.settings.digitCount === 5 || g.settings.sequenceLength >= 30
+          );
+          return eliteGames.length >= 1;
+        },
+      },
+
+      // Special Achievements
+      {
+        id: 'comeback_kid',
+        name: 'Comeback Kid',
+        description: 'Get a correct answer after 3 wrong answers',
+        condition: () => {
+          const recent = this.stats.gameHistory.slice(-4);
+          if (recent.length < 4) return false;
+          const lastThree = recent.slice(0, 3);
+          const current = recent[3];
+          return lastThree.every((g) => !g.isCorrect) && current.isCorrect;
+        },
+      },
+      {
+        id: 'night_owl',
+        name: 'Night Owl',
+        description: 'Play a game between midnight and 6 AM',
+        condition: () => {
+          if (!gameRecord) return false;
+          const hour = gameRecord.timestamp.getHours();
+          return hour >= 0 && hour < 6;
+        },
+      },
+      {
+        id: 'early_bird',
+        name: 'Early Bird',
+        description: 'Play a game between 5 AM and 8 AM',
+        condition: () => {
+          if (!gameRecord) return false;
+          const hour = gameRecord.timestamp.getHours();
+          return hour >= 5 && hour < 8;
+        },
+      },
+      {
+        id: 'daily_grind',
+        name: 'Daily Grind',
+        description: 'Play games on 7 consecutive days',
+        condition: () => {
+          const today = new Date();
+          const last7Days = Array.from({ length: 7 }, (_, i) => {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            return date.toISOString().split('T')[0];
+          });
+
+          return last7Days.every(
+            (date) =>
+              this.stats.dailyStats[date] &&
+              this.stats.dailyStats[date].games > 0
+          );
+        },
+      },
+      {
+        id: 'weekend_warrior',
+        name: 'Weekend Warrior',
+        description: 'Play 20 games on weekends',
+        condition: () => {
+          const weekendGames = this.stats.gameHistory.filter((g) => {
+            const day = g.timestamp.getDay();
+            return day === 0 || day === 6; // Sunday or Saturday
+          });
+          return weekendGames.length >= 20;
+        },
+      },
+      {
+        id: 'power_session',
+        name: 'Power Session',
+        description: 'Play 20 games in one day',
+        condition: () => {
+          const today = new Date().toISOString().split('T')[0];
+          const todayStats = this.stats.dailyStats[today];
+          return todayStats && todayStats.games >= 20;
+        },
+      },
+      {
+        id: 'precision_master',
+        name: 'Precision Master',
+        description: 'Get 10 answers within 1% of correct value',
+        condition: () => {
+          const preciseGames = this.stats.gameHistory.filter((g) => {
+            if (g.isCorrect) return true;
+            const error = Math.abs(g.userAnswer - g.correctSum);
+            const errorPercent = error / g.correctSum;
+            return errorPercent <= 0.01;
+          });
+          return preciseGames.length >= 10;
+        },
       },
     ];
   }

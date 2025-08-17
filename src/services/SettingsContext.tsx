@@ -14,6 +14,9 @@ const defaultSettings: GameSettings = {
   timeBetween: 300,
   soundEnabled: true,
   hapticEnabled: true,
+  voiceEnabled: false,
+  speechRate: 1.0,
+  voiceURI: '',
 };
 
 interface SettingsContextType {

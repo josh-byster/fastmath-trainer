@@ -67,6 +67,9 @@ describe('GameLogic', () => {
       timeBetween: 500,
       soundEnabled: true,
       hapticEnabled: true,
+      voiceEnabled: false,
+      speechRate: 1.0,
+      voiceURI: '',
     };
 
     const hardSettings: GameSettings = {
@@ -76,6 +79,9 @@ describe('GameLogic', () => {
       timeBetween: 200,
       soundEnabled: true,
       hapticEnabled: true,
+      voiceEnabled: false,
+      speechRate: 1.0,
+      voiceURI: '',
     };
 
     it('should give perfect score for correct answer', () => {
@@ -171,6 +177,9 @@ describe('GameLogic', () => {
         timeBetween: 500,
         soundEnabled: true,
         hapticEnabled: true,
+        voiceEnabled: false,
+        speechRate: 1.0,
+        voiceURI: '',
       };
       const difficulty = GameLogic.getDifficultyLevel(settings);
       expect(difficulty).toBe('easy');
@@ -184,6 +193,9 @@ describe('GameLogic', () => {
         timeBetween: 200,
         soundEnabled: true,
         hapticEnabled: true,
+        voiceEnabled: false,
+        speechRate: 1.0,
+        voiceURI: '',
       };
       const difficulty = GameLogic.getDifficultyLevel(settings);
       expect(difficulty).toBe('hard');
@@ -197,6 +209,9 @@ describe('GameLogic', () => {
         timeBetween: 300,
         soundEnabled: true,
         hapticEnabled: true,
+        voiceEnabled: false,
+        speechRate: 1.0,
+        voiceURI: '',
       };
       const difficulty = GameLogic.getDifficultyLevel(settings);
       expect(difficulty).toBe('medium');
