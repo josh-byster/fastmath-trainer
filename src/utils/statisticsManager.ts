@@ -208,51 +208,56 @@ export class StatisticsManager {
     this.save();
   }
 
-  private checkAchievements(gameRecord: GameRecord): void {
-    const achievements: Achievement[] = [
+  private getAllAvailableAchievements(gameRecord?: GameRecord): Achievement[] {
+    return [
       {
         id: 'first_game',
         name: 'First Steps',
         description: 'Complete your first game',
-        condition: () => this.stats.totalGames === 1,
+        condition: () => this.stats.totalGames >= 1,
       },
       {
         id: 'perfect_score',
         name: 'Perfect!',
         description: 'Get a perfect accuracy score',
-        condition: () => gameRecord.breakdown.accuracy === 100,
+        condition: () =>
+          gameRecord ? gameRecord.breakdown.accuracy === 100 : false,
       },
       {
         id: 'speed_demon',
         name: 'Speed Demon',
         description: 'Complete a game in under 2 seconds',
-        condition: () => gameRecord.responseTime < 2000,
+        condition: () => (gameRecord ? gameRecord.responseTime < 2000 : false),
       },
       {
         id: 'streak_5',
         name: 'On Fire',
         description: 'Get 5 correct answers in a row',
-        condition: () => this.stats.currentStreak === 5,
+        condition: () => this.stats.currentStreak >= 5,
       },
       {
         id: 'streak_10',
         name: 'Unstoppable',
         description: 'Get 10 correct answers in a row',
-        condition: () => this.stats.currentStreak === 10,
+        condition: () => this.stats.currentStreak >= 10,
       },
       {
         id: 'high_scorer',
         name: 'High Scorer',
         description: 'Score over 1500 points',
-        condition: () => gameRecord.score >= 1500,
+        condition: () => (gameRecord ? gameRecord.score >= 1500 : false),
       },
       {
         id: 'century',
         name: 'Centurion',
         description: 'Play 100 games',
-        condition: () => this.stats.totalGames === 100,
+        condition: () => this.stats.totalGames >= 100,
       },
     ];
+  }
+
+  private checkAchievements(gameRecord: GameRecord): void {
+    const achievements = this.getAllAvailableAchievements(gameRecord);
 
     achievements.forEach((achievement) => {
       if (
@@ -409,5 +414,17 @@ export class StatisticsManager {
 
   getAllAchievements(): Achievement[] {
     return this.stats.achievements;
+  }
+
+  getAllAvailableAchievementsWithStatus(): (Achievement & {
+    isUnlocked: boolean;
+  })[] {
+    const availableAchievements = this.getAllAvailableAchievements();
+    return availableAchievements.map((achievement) => ({
+      ...achievement,
+      isUnlocked: this.hasAchievement(achievement.id),
+      unlockedAt: this.stats.achievements.find((a) => a.id === achievement.id)
+        ?.unlockedAt,
+    }));
   }
 }

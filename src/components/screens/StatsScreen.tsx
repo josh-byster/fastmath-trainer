@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Screen } from '../../types/game.types';
 import { useStatistics } from '../../contexts/StatisticsContext';
-import { StatsSummary, Achievement, RecentGame } from '../../utils/statisticsManager';
+import {
+  StatsSummary,
+  Achievement,
+  RecentGame,
+} from '../../utils/statisticsManager';
 
 interface StatsScreenProps {
   onNavigate: (screen: Screen) => void;
@@ -11,13 +15,16 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
   const { statisticsManager } = useStatistics();
   const [stats, setStats] = useState<StatsSummary | null>(null);
   const [recentGames, setRecentGames] = useState<RecentGame[]>([]);
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [achievements, setAchievements] = useState<
+    (Achievement & { isUnlocked: boolean })[]
+  >([]);
 
   useEffect(() => {
     const summary = statisticsManager.getStatsSummary();
     const recent = statisticsManager.getRecentGames(10);
-    const allAchievements = statisticsManager.getAllAchievements();
-    
+    const allAchievements =
+      statisticsManager.getAllAvailableAchievementsWithStatus();
+
     setStats(summary);
     setRecentGames(recent);
     setAchievements(allAchievements);
@@ -32,8 +39,9 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
       // Refresh data after reset
       const summary = statisticsManager.getStatsSummary();
       const recent = statisticsManager.getRecentGames(10);
-      const allAchievements = statisticsManager.getAllAchievements();
-      
+      const allAchievements =
+        statisticsManager.getAllAvailableAchievementsWithStatus();
+
       setStats(summary);
       setRecentGames(recent);
       setAchievements(allAchievements);
@@ -49,7 +57,7 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
       <div className="w-full max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold text-gradient">Your Progress</h2>
-          <button 
+          <button
             className="btn-secondary-modern text-sm"
             onClick={handleExport}
           >
@@ -63,25 +71,33 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
               {stats.totalGames}
             </div>
-            <div className="text-sm text-slate-600 dark:text-slate-400">Games Played</div>
+            <div className="text-sm text-slate-600 dark:text-slate-400">
+              Games Played
+            </div>
           </div>
           <div className="glass rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-green-600 dark:text-green-400">
               {stats.accuracy}%
             </div>
-            <div className="text-sm text-slate-600 dark:text-slate-400">Accuracy</div>
+            <div className="text-sm text-slate-600 dark:text-slate-400">
+              Accuracy
+            </div>
           </div>
           <div className="glass rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
               {stats.bestScore}
             </div>
-            <div className="text-sm text-slate-600 dark:text-slate-400">Best Score</div>
+            <div className="text-sm text-slate-600 dark:text-slate-400">
+              Best Score
+            </div>
           </div>
           <div className="glass rounded-lg p-4 text-center">
             <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">
               {stats.bestStreak}
             </div>
-            <div className="text-sm text-slate-600 dark:text-slate-400">Best Streak</div>
+            <div className="text-sm text-slate-600 dark:text-slate-400">
+              Best Streak
+            </div>
           </div>
         </div>
 
@@ -105,17 +121,23 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
             </h3>
             <div className="space-y-3 max-h-80 overflow-y-auto">
               {recentGames.map((game, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800 rounded-lg"
+                >
                   <div className="flex items-center space-x-3">
-                    <div className={`w-4 h-4 rounded-full ${
-                      game.isCorrect ? 'bg-green-500' : 'bg-red-500'
-                    }`} />
+                    <div
+                      className={`w-4 h-4 rounded-full ${
+                        game.isCorrect ? 'bg-green-500' : 'bg-red-500'
+                      }`}
+                    />
                     <div>
                       <div className="font-medium text-slate-700 dark:text-slate-200">
                         Score: {game.score}
                       </div>
                       <div className="text-sm text-slate-500 dark:text-slate-400">
-                        {game.difficulty} • {(game.responseTime / 1000).toFixed(1)}s
+                        {game.difficulty} •{' '}
+                        {(game.responseTime / 1000).toFixed(1)}s
                       </div>
                     </div>
                   </div>
@@ -132,23 +154,48 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
         {achievements.length > 0 && (
           <div className="glass rounded-lg p-6 mb-6">
             <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">
-              Achievements ({achievements.length})
+              Achievements ({achievements.filter((a) => a.isUnlocked).length}/
+              {achievements.length})
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {achievements.map((achievement) => (
-                <div key={achievement.id} className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
+                <div
+                  key={achievement.id}
+                  className={`border rounded-lg p-4 transition-all duration-200 ${
+                    achievement.isUnlocked
+                      ? 'bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-yellow-200 dark:border-yellow-700'
+                      : 'bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-700/50 border-slate-200 dark:border-slate-600 opacity-60'
+                  }`}
+                >
                   <div className="flex items-center space-x-3">
-                    <div className="text-2xl">🏆</div>
+                    <div className="text-2xl">
+                      {achievement.isUnlocked ? '🏆' : '🔒'}
+                    </div>
                     <div>
-                      <div className="font-bold text-yellow-800 dark:text-yellow-200">
+                      <div
+                        className={`font-bold ${
+                          achievement.isUnlocked
+                            ? 'text-yellow-800 dark:text-yellow-200'
+                            : 'text-slate-600 dark:text-slate-400'
+                        }`}
+                      >
                         {achievement.name}
                       </div>
-                      <div className="text-sm text-yellow-600 dark:text-yellow-300">
+                      <div
+                        className={`text-sm ${
+                          achievement.isUnlocked
+                            ? 'text-yellow-600 dark:text-yellow-300'
+                            : 'text-slate-500 dark:text-slate-500'
+                        }`}
+                      >
                         {achievement.description}
                       </div>
-                      {achievement.unlockedAt && (
+                      {achievement.isUnlocked && achievement.unlockedAt && (
                         <div className="text-xs text-yellow-500 dark:text-yellow-400 mt-1">
-                          {new Date(achievement.unlockedAt).toLocaleDateString()}
+                          Unlocked:{' '}
+                          {new Date(
+                            achievement.unlockedAt
+                          ).toLocaleDateString()}
                         </div>
                       )}
                     </div>
@@ -163,8 +210,18 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
         {stats.totalGames === 0 && (
           <div className="glass rounded-lg p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 glass rounded-full flex items-center justify-center">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              <svg
+                className="w-8 h-8 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
               </svg>
             </div>
             <h3 className="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-3">
@@ -178,20 +235,20 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
 
         {/* Actions */}
         <div className="flex space-x-4 pt-6">
-          <button 
+          <button
             className="btn-secondary-modern flex-1"
             onClick={() => onNavigate('home')}
           >
             Return Home
           </button>
-          <button 
+          <button
             className="btn-primary-modern flex-1"
             onClick={() => onNavigate('game')}
           >
             Start Game
           </button>
           {stats.totalGames > 0 && (
-            <button 
+            <button
               className="btn-secondary-modern px-4"
               onClick={handleReset}
               title="Reset all statistics"
