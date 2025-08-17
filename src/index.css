@@ -133,7 +133,8 @@
     @apply backdrop-blur-2xl;
     /* Center within the viewport */
     @apply left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2;
-    @apply w-full max-w-md mx-4;
+    width: calc(100% - 2rem);
+    max-width: 28rem; /* max-w-md equivalent */
     max-height: 70vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;

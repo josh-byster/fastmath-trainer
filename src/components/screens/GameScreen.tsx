@@ -218,32 +218,37 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
       {/* Main Game Content */}
       <div className="game-main-content">
         <div className="flex flex-col items-center space-y-8 w-full max-w-md mx-auto">
-          <div className="number-display">
-            <span
-              id="current-number"
-              data-testid="current-number"
-              className={`${
-                currentNumber.includes('Get Ready') ||
-                currentNumber.includes('Enter')
-                  ? 'text-2xl font-medium'
-                  : 'text-6xl font-bold'
-              } transition-all duration-300`}
-            >
-              {currentNumber}
-            </span>
-          </div>
+          {!showInput && (
+            <div className="number-display">
+              <span
+                id="current-number"
+                data-testid="current-number"
+                className={`${
+                  currentNumber.includes('Get Ready') ||
+                  currentNumber.includes('Enter')
+                    ? 'text-2xl font-medium'
+                    : 'text-6xl font-bold'
+                } transition-all duration-300`}
+              >
+                {currentNumber}
+              </span>
+            </div>
+          )}
 
-          <div
-            className="glass-card text-center"
-            data-testid="sequence-progress"
-          >
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              <span className="font-semibold text-blue-600 dark:text-blue-400">
-                {sequencePosition.current}
-              </span>{' '}
-              of <span className="font-semibold">{sequencePosition.total}</span>
-            </p>
-          </div>
+          {!showInput && (
+            <div
+              className="glass-card text-center"
+              data-testid="sequence-progress"
+            >
+              <p className="text-sm text-slate-600 dark:text-slate-400">
+                <span className="font-semibold text-blue-600 dark:text-blue-400">
+                  {sequencePosition.current}
+                </span>{' '}
+                of{' '}
+                <span className="font-semibold">{sequencePosition.total}</span>
+              </p>
+            </div>
+          )}
 
           <div
             data-testid="game-state"
