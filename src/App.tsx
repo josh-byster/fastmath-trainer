@@ -138,7 +138,7 @@ const App: React.FC = () => {
     <ThemeProvider>
       <SettingsProvider>
         <StatisticsProvider>
-          <div className="h-screen relative overflow-hidden flex flex-col">
+          <div className="h-screen relative overflow-hidden flex flex-col max-h-screen">
             {/* Background Elements */}
             <div className="fixed inset-0 -z-10">
               <div

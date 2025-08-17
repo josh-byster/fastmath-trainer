@@ -176,6 +176,12 @@
       @apply hidden;
     }
     
+    /* Ensure no overflow in standalone mode */
+    .screen-modern {
+      padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+      max-height: calc(100vh - 140px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    }
+    
     /* Adjust scrolling for iOS Safari */
     body {
       -webkit-overflow-scrolling: touch;
@@ -311,10 +317,8 @@ body {
   /* Screen transitions */
   .screen-modern {
     @apply flex-1 flex items-center justify-center p-4;
-    /* Account for header and navigation heights */
-    min-height: calc(100vh - 140px); /* ~60px header + ~80px nav */
-    padding-top: 1rem;
-    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+    /* Use flex-1 to fill available space without overflow */
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   }
   
   /* Results styling */
