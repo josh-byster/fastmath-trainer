@@ -23,6 +23,22 @@ describe('GameLogic', () => {
         expect(num).toBeLessThanOrEqual(999);
       });
     });
+
+    it('should generate 4-digit numbers (1000-9999)', () => {
+      const sequence = GameLogic.generateSequence(4, 10);
+      sequence.forEach((num) => {
+        expect(num).toBeGreaterThanOrEqual(1000);
+        expect(num).toBeLessThanOrEqual(9999);
+      });
+    });
+
+    it('should generate 5-digit numbers (10000-99999)', () => {
+      const sequence = GameLogic.generateSequence(5, 10);
+      sequence.forEach((num) => {
+        expect(num).toBeGreaterThanOrEqual(10000);
+        expect(num).toBeLessThanOrEqual(99999);
+      });
+    });
   });
 
   describe('calculateSum', () => {
@@ -102,14 +118,15 @@ describe('GameLogic', () => {
     it('should calculate accuracy multiplier correctly', () => {
       expect(GameLogic.calculateAccuracyMultiplier(100, 100)).toBe(1.0);
       expect(GameLogic.calculateAccuracyMultiplier(95, 100)).toBe(0.95);
-      expect(GameLogic.calculateAccuracyMultiplier(50, 100)).toBe(0);
-      expect(GameLogic.calculateAccuracyMultiplier(90, 100)).toBe(0.9);
+      expect(GameLogic.calculateAccuracyMultiplier(80, 100)).toBe(0.8);
+      expect(GameLogic.calculateAccuracyMultiplier(75, 100)).toBe(0.75); // Exactly 25% error = 75% accuracy
+      expect(GameLogic.calculateAccuracyMultiplier(50, 100)).toBe(0); // Beyond 25% threshold
     });
 
-    it('should calculate speed multiplier correctly', () => {
-      expect(GameLogic.calculateSpeedMultiplier(2000)).toBeCloseTo(0.389, 2);
-      expect(GameLogic.calculateSpeedMultiplier(20000)).toBe(0);
-      expect(GameLogic.calculateSpeedMultiplier(1000)).toBeCloseTo(0.44, 2);
+    it('should calculate speed bonus correctly', () => {
+      expect(GameLogic.calculateSpeedBonus(1000)).toBeCloseTo(30, 0);
+      expect(GameLogic.calculateSpeedBonus(5000)).toBe(0); // Updated to 5s max
+      expect(GameLogic.calculateSpeedBonus(500)).toBeCloseTo(39, 0);
     });
 
     it('should get difficulty multiplier correctly', () => {
@@ -187,10 +204,11 @@ describe('GameLogic', () => {
   });
 
   describe('formatTime', () => {
-    it('should format milliseconds to seconds with one decimal', () => {
-      expect(GameLogic.formatTime(1000)).toBe('1.0s');
-      expect(GameLogic.formatTime(1500)).toBe('1.5s');
-      expect(GameLogic.formatTime(2345)).toBe('2.3s');
+    it('should format milliseconds correctly', () => {
+      expect(GameLogic.formatTime(500)).toBe('500ms');
+      expect(GameLogic.formatTime(1000)).toBe('1.000s');
+      expect(GameLogic.formatTime(1500)).toBe('1.500s');
+      expect(GameLogic.formatTime(2345)).toBe('2.345s');
     });
   });
 

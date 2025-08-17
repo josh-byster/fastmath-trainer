@@ -101,14 +101,118 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Current Streak */}
-        {stats.currentStreak > 0 && (
-          <div className="glass rounded-lg p-4 text-center mb-6">
-            <div className="text-xl font-bold text-gradient mb-2">
-              🔥 Current Streak: {stats.currentStreak}
-            </div>
-            <div className="text-sm text-slate-600 dark:text-slate-400">
-              Keep going to beat your record!
+        {/* Performance Highlights */}
+        {stats.totalGames > 0 && (
+          <div className="mb-8">
+            <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">
+              🏆 Performance Highlights
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Best Game */}
+              {(() => {
+                const bestGame = recentGames.reduce(
+                  (best, game) => (game.score > best.score ? game : best),
+                  recentGames[0] || null
+                );
+                return (
+                  bestGame && (
+                    <div className="glass rounded-lg p-4 border-l-4 border-yellow-500">
+                      <div className="flex items-center mb-2">
+                        <span className="text-lg mr-2">🏆</span>
+                        <span className="font-bold text-slate-700 dark:text-slate-200">
+                          Best Game
+                        </span>
+                      </div>
+                      <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-400 mb-1">
+                        {bestGame.score} points
+                      </div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        {bestGame.difficulty} •{' '}
+                        {(bestGame.responseTime / 1000).toFixed(1)}s
+                      </div>
+                      <div className="text-xs text-slate-500 dark:text-slate-500 mt-1">
+                        {bestGame.timestamp.toLocaleDateString()}
+                      </div>
+                    </div>
+                  )
+                );
+              })()}
+
+              {/* Fastest Response */}
+              {(() => {
+                const correctGames = recentGames.filter((g) => g.isCorrect);
+                if (correctGames.length === 0) return null;
+                const fastestGame = correctGames.reduce((fastest, game) =>
+                  game.responseTime < fastest.responseTime ? game : fastest
+                );
+                return (
+                  <div className="glass rounded-lg p-4 border-l-4 border-blue-500">
+                    <div className="flex items-center mb-2">
+                      <span className="text-lg mr-2">⚡</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-200">
+                        Fastest Response
+                      </span>
+                    </div>
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
+                      {(fastestGame.responseTime / 1000).toFixed(1)}s
+                    </div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                      {fastestGame.difficulty} • {fastestGame.score} points
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-500 mt-1">
+                      {fastestGame.timestamp.toLocaleDateString()}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Current Streak or Recent Achievement */}
+              {stats.currentStreak > 0 ? (
+                <div className="glass rounded-lg p-4 border-l-4 border-green-500">
+                  <div className="flex items-center mb-2">
+                    <span className="text-lg mr-2">🔥</span>
+                    <span className="font-bold text-slate-700 dark:text-slate-200">
+                      Hot Streak
+                    </span>
+                  </div>
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
+                    {stats.currentStreak} correct
+                  </div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400">
+                    Keep going for a new record!
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-500 mt-1">
+                    Best: {stats.bestStreak} games
+                  </div>
+                </div>
+              ) : (
+                achievements.find((a) => a.isUnlocked) && (
+                  <div className="glass rounded-lg p-4 border-l-4 border-purple-500">
+                    <div className="flex items-center mb-2">
+                      <span className="text-lg mr-2">🎉</span>
+                      <span className="font-bold text-slate-700 dark:text-slate-200">
+                        Latest Achievement
+                      </span>
+                    </div>
+                    <div className="text-lg font-bold text-purple-600 dark:text-purple-400 mb-1">
+                      {
+                        achievements.filter((a) => a.isUnlocked).slice(-1)[0]
+                          ?.name
+                      }
+                    </div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                      {
+                        achievements.filter((a) => a.isUnlocked).slice(-1)[0]
+                          ?.description
+                      }
+                    </div>
+                    <div className="text-xs text-slate-500 dark:text-slate-500 mt-1">
+                      {achievements.filter((a) => a.isUnlocked).length}/
+                      {achievements.length} unlocked
+                    </div>
+                  </div>
+                )
+              )}
             </div>
           </div>
         )}

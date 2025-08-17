@@ -55,28 +55,20 @@ export const StatisticsProvider: React.FC<{ children: React.ReactNode }> = ({
       throw new Error('Managers not initialized');
     }
 
-    // Use new GameLogic scoring instead of old ScoringSystem
-    const scoringData = GameLogic.calculateScore(
-      gameResult.userAnswer,
-      gameResult.correctAnswer,
-      gameResult.responseTime,
-      gameResult.settings
-    );
-
-    // Create ScoreResult in the format expected by StatisticsManager
+    // Use the score that was already calculated in GameScreen
+    // Don't recalculate to avoid discrepancies
     const scoreResult: ScoreResult = {
-      score: scoringData.score,
+      score: gameResult.score,
       breakdown: {
-        accuracy: scoringData.accuracyPercentage,
-        difficulty: scoringData.difficultyMultiplier * 100,
-        speed: scoringData.speedBonus,
-        total: scoringData.score,
+        accuracy: gameResult.accuracyPercentage,
+        difficulty: gameResult.difficultyMultiplier * 100,
+        speed: gameResult.speedBonus,
+        total: gameResult.score,
       },
       multipliers: {
-        difficulty: scoringData.difficultyMultiplier,
-        accuracy: scoringData.accuracyPercentage / 100,
-        speed:
-          scoringData.speedBonus / (scoringData.difficultyMultiplier * 100),
+        difficulty: gameResult.difficultyMultiplier,
+        accuracy: gameResult.accuracyPercentage / 100,
+        speed: gameResult.speedBonus / (gameResult.difficultyMultiplier * 100),
       },
     };
 

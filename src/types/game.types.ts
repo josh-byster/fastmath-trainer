@@ -1,5 +1,5 @@
 export interface GameSettings {
-  digitCount: 2 | 3;
+  digitCount: 2 | 3 | 4 | 5;
   sequenceLength: number;
   timeOnScreen: number;
   timeBetween: number;
