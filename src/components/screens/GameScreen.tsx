@@ -16,13 +16,24 @@ interface GameScreenProps {
 }
 
 export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
+  console.log('[COMPONENT] GameScreen component rendering/re-rendering');
+
   const { settings } = useSettings();
   const { recordGame } = useStatistics();
   const audioManagerRef = useRef<AudioManager | null>(null);
   const gameStartingRef = useRef<boolean>(false);
+  const componentIdRef = useRef<string>(
+    Math.random().toString(36).substr(2, 9)
+  );
+  const gameInitializedRef = useRef<boolean>(false);
+
+  console.log(`[COMPONENT] GameScreen instance ID: ${componentIdRef.current}`);
 
   // Initialize AudioManager only once
   if (!audioManagerRef.current) {
+    console.log(
+      `[COMPONENT] Creating new AudioManager for instance ${componentIdRef.current}`
+    );
     audioManagerRef.current = new AudioManager();
   }
 
@@ -45,19 +56,28 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
   const [showInput, setShowInput] = useState(false);
 
   const startGame = async (): Promise<void> => {
+    console.log(
+      `[GAME] startGame called for instance ${componentIdRef.current}`
+    );
+    console.log(
+      `[GAME] Current state check - gameState.state: ${gameState.state}, currentSequence.length: ${gameState.currentSequence.length}, gameStartingRef.current: ${gameStartingRef.current}`
+    );
+
     if (
       gameState.state !== 'idle' ||
       gameState.currentSequence.length > 0 ||
       gameStartingRef.current
     ) {
       console.log(
-        '[GAME] Skipping startGame - game already in progress or starting'
+        `[GAME] Skipping startGame for instance ${componentIdRef.current} - game already in progress or starting`
       );
       return;
     }
 
     gameStartingRef.current = true;
-    console.log('[GAME] Starting new game');
+    console.log(
+      `[GAME] Starting new game for instance ${componentIdRef.current}`
+    );
 
     try {
       const sequence = GameLogic.generateSequence(
@@ -99,26 +119,39 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
   };
 
   useEffect(() => {
-    if (
-      gameState.state === 'idle' &&
-      gameState.currentSequence.length === 0 &&
-      !gameStartingRef.current
-    ) {
-      console.log('[GAME] Starting new game from useEffect');
+    console.log(
+      `[USEEFFECT] useEffect triggered for instance ${componentIdRef.current}`
+    );
+    console.log(
+      `[USEEFFECT] gameInitializedRef.current: ${gameInitializedRef.current}`
+    );
+
+    if (!gameInitializedRef.current) {
+      gameInitializedRef.current = true;
+      console.log(
+        `[USEEFFECT] About to call startGame from useEffect for instance ${componentIdRef.current}`
+      );
       startGame();
+    } else {
+      console.log(
+        `[USEEFFECT] Skipping startGame - already initialized for instance ${componentIdRef.current}`
+      );
     }
 
     return () => {
+      console.log(
+        `[CLEANUP] Cleanup function called for instance ${componentIdRef.current}`
+      );
       try {
         audioManagerRef.current?.cleanup();
-        // Reset the starting flag on cleanup
+        // Only reset gameStartingRef, but keep gameInitializedRef to prevent double-initialization in StrictMode
         gameStartingRef.current = false;
+        // DO NOT reset gameInitializedRef.current here - it should persist across StrictMode cleanup/re-run
       } catch (error) {
         // Silently handle cleanup errors in tests
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gameState.state, gameState.currentSequence.length]);
+  }, []); // Empty dependency array - only run once on mount
 
   const playSequence = async (sequence: number[]): Promise<void> => {
     const { timeOnScreen, timeBetween } = settings;
