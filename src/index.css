@@ -496,8 +496,8 @@ body {
 
   /* Achievement Popup */
   .achievement-popup {
-    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
-    @apply glass-card z-50 max-w-md w-full mx-4;
+    @apply fixed top-1/2 left-4 right-4 transform -translate-y-1/2;
+    @apply glass-card z-50 max-w-md mx-auto;
     @apply opacity-0 scale-75 transition-all duration-300 ease-out;
   }
 
@@ -591,6 +591,27 @@ body {
     min-height: 44px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Achievement popup mobile adjustments */
+  .achievement-popup {
+    @apply left-2 right-2 max-w-sm;
+  }
+
+  .achievement-content {
+    @apply space-x-3;
+  }
+
+  .achievement-popup .achievement-icon {
+    @apply text-3xl;
+  }
+
+  .achievement-text h3 {
+    @apply text-lg;
+  }
+
+  .achievement-text p {
+    @apply text-xs;
   }
 }
 
