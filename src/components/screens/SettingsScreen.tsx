@@ -84,8 +84,11 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   const difficultyLevel = GameLogic.getDifficultyLevel(settings);
 
   return (
-    <div className="screen-modern pb-24" data-testid="settings-screen">
-      <div className="w-full max-w-2xl mx-auto space-y-6">
+    <div
+      className="min-h-screen overflow-y-auto py-8 px-4"
+      data-testid="settings-screen"
+    >
+      <div className="w-full max-w-2xl mx-auto space-y-6 pb-24">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gradient mb-2">
             Game Settings

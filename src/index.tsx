@@ -15,8 +15,10 @@ root.render(
   </React.StrictMode>
 );
 
-// Register the service worker for PWA functionality
-serviceWorkerRegistration.register();
+// Register the service worker for PWA functionality only in production
+if (process.env.NODE_ENV === 'production') {
+  serviceWorkerRegistration.register();
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

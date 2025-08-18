@@ -17,8 +17,8 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
 }) => {
   if (!result) {
     return (
-      <div className="screen-modern pb-24">
-        <div className="w-full max-w-2xl mx-auto text-center">
+      <div className="min-h-screen overflow-y-auto py-8 px-4">
+        <div className="w-full max-w-2xl mx-auto text-center pb-24">
           <h2 className="text-3xl font-bold text-gradient mb-8">Results</h2>
           <div className="result-card">
             <p className="text-slate-600 dark:text-slate-300 mb-6">
@@ -44,8 +44,11 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
   const rank = scoringSystem.getRankForScore(result.score);
 
   return (
-    <div className="screen-modern pb-24" data-testid="results-screen">
-      <div className="w-full max-w-2xl mx-auto space-y-6">
+    <div
+      className="min-h-screen overflow-y-auto py-8 px-4"
+      data-testid="results-screen"
+    >
+      <div className="w-full max-w-2xl mx-auto space-y-6 pb-24">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gradient mb-2">Results</h2>
         </div>

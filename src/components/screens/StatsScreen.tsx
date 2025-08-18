@@ -53,8 +53,8 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
   }
 
   return (
-    <div className="screen-modern pb-24">
-      <div className="w-full max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen overflow-y-auto py-8 px-4">
+      <div className="w-full max-w-4xl mx-auto space-y-6 pb-24">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold text-gradient">Your Progress</h2>
           <button
