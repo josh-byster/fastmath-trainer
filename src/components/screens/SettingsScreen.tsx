@@ -81,10 +81,6 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
     resetSettings();
   };
 
-  const handleSaveAndStart = (): void => {
-    onNavigate('game');
-  };
-
   const difficultyLevel = GameLogic.getDifficultyLevel(settings);
 
   return (
