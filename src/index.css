@@ -4,6 +4,78 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
+/* Safe Area Design Tokens */
+:root {
+  /* Raw safe area values */
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+  
+  /* Semantic safe area tokens */
+  --app-safe-area-top: max(var(--safe-area-inset-top), 0.5rem);
+  --app-safe-area-bottom: max(var(--safe-area-inset-bottom), 0.5rem);
+  --app-safe-area-left: max(var(--safe-area-inset-left), 0rem);
+  --app-safe-area-right: max(var(--safe-area-inset-right), 0rem);
+  
+  /* Layout primitives */
+  --header-height: 4rem;
+  --navigation-height: 5rem;
+  
+  /* Responsive breakpoints */
+  --mobile-max: 768px;
+  --tablet-max: 1024px;
+}
+
+/* CSS Grid App Shell Architecture */
+.app {
+  height: 100dvh; /* Dynamic viewport height */
+  height: 100vh; /* Fallback for older browsers */
+  display: grid;
+  grid-template-areas: 
+    "header"
+    "main"
+    "navigation";
+  grid-template-rows: 
+    var(--header-height)
+    1fr
+    var(--navigation-height);
+  
+  /* Apply safe areas as padding to entire app */
+  padding: 
+    var(--safe-area-inset-top)
+    var(--safe-area-inset-right) 
+    var(--safe-area-inset-bottom)
+    var(--safe-area-inset-left);
+  
+  /* Prevent any overflow */
+  overflow: hidden;
+}
+
+.app__header {
+  grid-area: header;
+  z-index: 10;
+}
+
+.app__main {
+  grid-area: main;
+  overflow: hidden auto; /* Only vertical scroll when needed */
+  position: relative;
+  z-index: 1;
+}
+
+.app__navigation {
+  grid-area: navigation;
+  z-index: 10;
+}
+
+/* Screen Container Base Styles */
+.screen-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
 /* PWA-specific styles */
 @layer components {
   /* Install Button */
@@ -108,13 +180,18 @@
   /* Game Screen Layout */
   .game-screen-container {
     @apply relative w-full;
-    /* Ensure full height considering navigation */
-    height: calc(100vh - 80px);
-    min-height: calc(100vh - 80px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    /* No more viewport calculations needed */
   }
 
   .game-main-content {
-    @apply h-full flex items-center justify-center p-4;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
   }
 
   /* Input Panel Backdrop - positioned relative to viewport for full coverage */
@@ -127,30 +204,35 @@
 
   /* New Input Panel Positioning - fixed to viewport center */
   .game-input-panel-new {
-    @apply fixed z-50;
-    @apply glass rounded-2xl;
-    @apply border border-white/20 dark:border-white/10;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    @apply glass rounded-t-2xl;
+    @apply border-t border-white/20 dark:border-white/10;
     @apply backdrop-blur-2xl;
-    /* Center within the viewport */
-    @apply left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2;
-    width: calc(100% - 2rem);
-    max-width: 28rem; /* max-w-md equivalent */
-    max-height: 70vh;
+    max-height: 65vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     will-change: transform;
+    /* No more calc() with safe areas - let the parent handle it */
   }
 
   .game-input-content {
     @apply p-6 space-y-6;
   }
 
-  /* Old game input panel - keeping for backward compatibility */
+  /* Old game input panel - simplified positioning */
   .game-input-panel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
     @apply glass rounded-t-2xl p-6;
     @apply border-t border-white/20 dark:border-white/10;
     @apply backdrop-blur-2xl;
-    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
     max-height: 65vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -178,10 +260,9 @@
       @apply hidden;
     }
     
-    /* Ensure no overflow in standalone mode */
+    /* Ensure no overflow in standalone mode - simplified */
     .screen-modern {
-      padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-      max-height: calc(100vh - 140px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+      padding: 1rem;
     }
     
     /* Adjust scrolling for iOS Safari */
@@ -318,9 +399,12 @@ body {
   
   /* Screen transitions */
   .screen-modern {
-    @apply flex-1 flex items-center justify-center p-4;
-    /* Use flex-1 to fill available space without overflow */
-    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    /* Use height: 100% instead of viewport calculations */
   }
   
   /* Results styling */
@@ -477,12 +561,7 @@ body {
     padding-bottom: env(safe-area-inset-bottom, 0.5rem);
   }
 
-  /* Game screen mobile adjustments */
-  .game-screen-container {
-    /* Adjust for mobile viewport height and navigation */
-    height: calc(100vh - 80px - env(safe-area-inset-bottom, 0px));
-    min-height: calc(100vh - 80px - env(safe-area-inset-bottom, 0px));
-  }
+  /* Game screen mobile adjustments - no manual height calculations needed */
   
   /* Mobile bottom padding to avoid navigation overlap */
   .pb-safe {
@@ -491,13 +570,8 @@ body {
 
   /* Mobile-specific input panel positioning */
   .game-input-panel-new {
-    /* Keep centered positioning but adjust for mobile */
+    /* Simplified mobile positioning */
     max-height: 60vh;
-    @apply w-11/12 max-w-sm;
-    /* Ensure proper centering on mobile */
-    left: 50% !important;
-    top: 50% !important;
-    transform: translate(-50%, -50%) !important;
   }
 
   .game-input-content {
@@ -506,12 +580,8 @@ body {
   
   /* Input panel positioned above navigation - old class */
   .game-input-panel {
-    position: fixed;
-    bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-    left: 0;
-    right: 0;
+    /* Inherits positioning from global .game-input-panel */
     max-height: 60vh;
-    overflow-y: auto;
   }
   
   /* Number pad mobile optimization */

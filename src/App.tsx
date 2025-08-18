@@ -138,7 +138,7 @@ const App: React.FC = () => {
     <ThemeProvider>
       <SettingsProvider>
         <StatisticsProvider>
-          <div className="h-screen relative overflow-hidden flex flex-col max-h-screen">
+          <div className="app">
             {/* Background Elements */}
             <div className="fixed inset-0 -z-10">
               <div
@@ -155,12 +155,15 @@ const App: React.FC = () => {
               />
             </div>
 
-            <Header onSettingsClick={() => navigateToScreen('settings')} />
+            <header className="app__header">
+              <Header onSettingsClick={() => navigateToScreen('settings')} />
+            </header>
 
-            <main className="relative z-10 flex-1 overflow-y-auto overflow-x-hidden">
+            <main className="app__main">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentScreen}
+                  className="screen-container"
                   initial="initial"
                   animate="in"
                   exit="out"
@@ -177,10 +180,12 @@ const App: React.FC = () => {
               </AnimatePresence>
             </main>
 
-            <Navigation
-              currentScreen={currentScreen}
-              onNavigate={navigateToScreen}
-            />
+            <nav className="app__navigation">
+              <Navigation
+                currentScreen={currentScreen}
+                onNavigate={navigateToScreen}
+              />
+            </nav>
 
             <div
               aria-live="polite"
