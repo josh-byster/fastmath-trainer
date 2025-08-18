@@ -242,26 +242,8 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
         )}
 
         {/* Actions */}
-        <div className="flex space-x-4 pt-6">
-          <button
-            className="btn-secondary-modern flex-1"
-            onClick={() => onNavigate('home')}
-          >
-            Return Home
-          </button>
-          <button
-            className="btn-secondary-modern flex-1"
-            onClick={() => onNavigate('achievements')}
-          >
-            Achievements
-          </button>
-          <button
-            className="btn-primary-modern flex-1"
-            onClick={() => onNavigate('game')}
-          >
-            Start Game
-          </button>
-          {stats.totalGames > 0 && (
+        {stats.totalGames > 0 && (
+          <div className="flex justify-center pt-6">
             <button
               className="btn-secondary-modern px-4"
               onClick={handleReset}
@@ -269,8 +251,8 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
             >
               Reset
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

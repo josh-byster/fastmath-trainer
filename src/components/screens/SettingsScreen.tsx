@@ -464,19 +464,13 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </div>
         </div>
 
-        <div className="flex space-x-4 pt-6">
+        <div className="flex justify-center pt-6">
           <button
-            className="btn-secondary-modern flex-1"
+            className="btn-secondary-modern"
             data-testid="reset-settings-btn"
             onClick={handleReset}
           >
             Reset to Defaults
-          </button>
-          <button
-            className="btn-primary-modern flex-1"
-            onClick={handleSaveAndStart}
-          >
-            Save & Start Game
           </button>
         </div>
       </div>

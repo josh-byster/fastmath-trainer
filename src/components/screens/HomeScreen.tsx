@@ -103,23 +103,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             Start Training
           </motion.button>
 
-          <motion.button
-            className="btn-secondary-modern flex items-center justify-center gap-3"
-            onClick={handleViewStats}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{
-              type: 'spring',
-              stiffness: 500,
-              damping: 25,
-              mass: 0.5,
-            }}
-            style={{ willChange: 'transform' }}
-          >
-            <TrendingUp className="w-5 h-5" />
-            View Statistics
-          </motion.button>
-
           {pwaManager && (
             <motion.button
               className={`btn-secondary-modern flex items-center justify-center gap-3 ${

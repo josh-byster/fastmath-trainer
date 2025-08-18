@@ -25,12 +25,6 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
             <p className="text-slate-600 dark:text-slate-300 mb-6">
               No results to display
             </p>
-            <button
-              className="btn-primary-modern"
-              onClick={() => onNavigate('home')}
-            >
-              Return Home
-            </button>
           </div>
         </div>
       </div>
@@ -196,20 +190,13 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
             </div>
           </div>
 
-          <div className="flex space-x-4 pt-6">
+          <div className="flex justify-center pt-6">
             <button
-              className="btn-primary-modern flex-1"
+              className="btn-primary-modern"
               data-testid="play-again-btn"
               onClick={handlePlayAgain}
             >
               Play Again
-            </button>
-            <button
-              className="btn-secondary-modern flex-1"
-              data-testid="home-btn"
-              onClick={() => onNavigate('home')}
-            >
-              Return Home
             </button>
           </div>
         </div>

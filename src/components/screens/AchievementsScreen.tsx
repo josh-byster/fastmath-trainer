@@ -150,22 +150,6 @@ export const AchievementsScreen: React.FC<AchievementsScreenProps> = ({
             </p>
           </div>
         )}
-
-        {/* Actions */}
-        <div className="flex space-x-4 pt-6">
-          <button
-            className="btn-secondary-modern flex-1"
-            onClick={() => onNavigate('stats')}
-          >
-            View Stats
-          </button>
-          <button
-            className="btn-primary-modern flex-1"
-            onClick={() => onNavigate('game')}
-          >
-            Start Game
-          </button>
-        </div>
       </div>
     </div>
   );
