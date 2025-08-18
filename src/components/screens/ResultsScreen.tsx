@@ -3,6 +3,7 @@ import { Screen, GameResult } from '../../types/game.types';
 import { GameLogic } from '../../utils/gameLogic';
 import { ScoreResult } from '../../utils/scoringSystem';
 import { ScoringSystem } from '../../utils/scoringSystem';
+import { ScoreTooltip } from '../ScoreTooltip';
 
 interface ResultsScreenProps {
   onNavigate: (screen: Screen) => void;
@@ -97,38 +98,48 @@ export const ResultsScreen: React.FC<ResultsScreenProps> = ({
               Score Breakdown
             </h4>
             <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="glass rounded-lg p-3 text-center">
-                <div
-                  className={`text-2xl font-bold ${
-                    result.isCorrect
-                      ? 'text-green-600 dark:text-green-400'
-                      : 'text-slate-500 dark:text-slate-400'
-                  }`}
-                >
-                  {Math.round(
-                    result.difficultyMultiplier *
-                      100 *
-                      (result.accuracyPercentage / 100)
-                  )}
+              <ScoreTooltip result={result} type="accuracy">
+                <div className="glass rounded-lg p-3 text-center hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+                  <div
+                    className={`text-2xl font-bold ${
+                      result.isCorrect
+                        ? 'text-green-600 dark:text-green-400'
+                        : 'text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    {Math.round(
+                      result.difficultyMultiplier *
+                        100 *
+                        (result.accuracyPercentage / 100)
+                    )}
+                  </div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400">
+                    Accuracy Points
+                  </div>
+                  <div className="text-xs text-blue-500 dark:text-blue-400 mt-1">
+                    Click for details
+                  </div>
                 </div>
-                <div className="text-xs text-slate-600 dark:text-slate-400">
-                  Accuracy Points
+              </ScoreTooltip>
+              <ScoreTooltip result={result} type="speed">
+                <div className="glass rounded-lg p-3 text-center hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer">
+                  <div
+                    className={`text-2xl font-bold ${
+                      result.speedBonus > 0
+                        ? 'text-purple-600 dark:text-purple-400'
+                        : 'text-slate-500 dark:text-slate-400'
+                    }`}
+                  >
+                    {result.speedBonus}
+                  </div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400">
+                    Speed Bonus
+                  </div>
+                  <div className="text-xs text-blue-500 dark:text-blue-400 mt-1">
+                    Click for details
+                  </div>
                 </div>
-              </div>
-              <div className="glass rounded-lg p-3 text-center">
-                <div
-                  className={`text-2xl font-bold ${
-                    result.speedBonus > 0
-                      ? 'text-purple-600 dark:text-purple-400'
-                      : 'text-slate-500 dark:text-slate-400'
-                  }`}
-                >
-                  {result.speedBonus}
-                </div>
-                <div className="text-xs text-slate-600 dark:text-slate-400">
-                  Speed Bonus
-                </div>
-              </div>
+              </ScoreTooltip>
             </div>
             <div className="glass rounded-lg p-3 text-center bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border border-yellow-200 dark:border-yellow-700">
               <div className="text-sm text-slate-600 dark:text-slate-400 mb-1">
