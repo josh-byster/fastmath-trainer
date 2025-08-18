@@ -68,6 +68,7 @@ describe('GameLogic', () => {
       soundEnabled: true,
       hapticEnabled: true,
       voiceEnabled: false,
+      audioOnlyMode: false,
       speechRate: 1.0,
       voiceURI: '',
     };
@@ -80,6 +81,7 @@ describe('GameLogic', () => {
       soundEnabled: true,
       hapticEnabled: true,
       voiceEnabled: false,
+      audioOnlyMode: false,
       speechRate: 1.0,
       voiceURI: '',
     };
@@ -178,6 +180,7 @@ describe('GameLogic', () => {
         soundEnabled: true,
         hapticEnabled: true,
         voiceEnabled: false,
+        audioOnlyMode: false,
         speechRate: 1.0,
         voiceURI: '',
       };
@@ -194,6 +197,7 @@ describe('GameLogic', () => {
         soundEnabled: true,
         hapticEnabled: true,
         voiceEnabled: false,
+        audioOnlyMode: false,
         speechRate: 1.0,
         voiceURI: '',
       };
@@ -210,6 +214,7 @@ describe('GameLogic', () => {
         soundEnabled: true,
         hapticEnabled: true,
         voiceEnabled: false,
+        audioOnlyMode: false,
         speechRate: 1.0,
         voiceURI: '',
       };

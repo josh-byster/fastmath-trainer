@@ -191,7 +191,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
             sequence[i]
           } at ${clearTime.toFixed(2)}ms`
         );
-        setCurrentNumber('');
+        // Only clear visual display if not in audio-only mode
+        if (!settings.audioOnlyMode || !settings.voiceEnabled) {
+          setCurrentNumber('');
+        }
         console.log(
           `[SEQUENCE] Starting pause of ${timeBetween}ms between numbers at ${performance
             .now()
@@ -214,7 +217,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     }
 
     const sequenceEndTime = performance.now();
-    setCurrentNumber('');
+    // Only clear visual display if not in audio-only mode
+    if (!settings.audioOnlyMode || !settings.voiceEnabled) {
+      setCurrentNumber('');
+    }
     console.log(
       `[SEQUENCE] Sequence playback completed at ${sequenceEndTime.toFixed(
         2
@@ -235,13 +241,19 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
       )}ms (duration: ${duration}ms)`
     );
 
-    // Set the visual number and keep it stable
-    setCurrentNumber(number.toString());
-    console.log(
-      `[DISPLAY] Visual number set to: ${number} at ${performance
-        .now()
-        .toFixed(2)}ms`
-    );
+    // Set the visual number only if not in audio-only mode
+    if (!settings.audioOnlyMode || !settings.voiceEnabled) {
+      setCurrentNumber(number.toString());
+      console.log(
+        `[DISPLAY] Visual number set to: ${number} at ${performance
+          .now()
+          .toFixed(2)}ms`
+      );
+    } else {
+      console.log(
+        `[DISPLAY] Audio-only mode enabled, skipping visual display for number: ${number}`
+      );
+    }
 
     if (settings.voiceEnabled) {
       // Start TTS and wait for it to complete OR the visual duration, whichever is longer
@@ -389,12 +401,20 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
                 data-testid="current-number"
                 className={`${
                   currentNumber.includes('Get Ready') ||
-                  currentNumber.includes('Enter')
+                  currentNumber.includes('Enter') ||
+                  (settings.audioOnlyMode &&
+                    settings.voiceEnabled &&
+                    gameState.state === 'playing')
                     ? 'text-2xl font-medium'
                     : 'text-6xl font-bold'
                 }`}
               >
-                {currentNumber}
+                {settings.audioOnlyMode &&
+                settings.voiceEnabled &&
+                gameState.state === 'playing' &&
+                !currentNumber.includes('Get Ready')
+                  ? 'Listen...'
+                  : currentNumber}
               </span>
             </div>
           )}

@@ -15,6 +15,7 @@ const defaultSettings: GameSettings = {
   soundEnabled: true,
   hapticEnabled: true,
   voiceEnabled: false,
+  audioOnlyMode: false,
   speechRate: 1.0,
   voiceURI: '',
 };

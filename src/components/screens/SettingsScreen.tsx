@@ -49,6 +49,10 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
     updateSettings({ voiceEnabled: !settings.voiceEnabled });
   };
 
+  const handleAudioOnlyToggle = (): void => {
+    updateSettings({ audioOnlyMode: !settings.audioOnlyMode });
+  };
+
   const handleSpeechRateChange = (value: string): void => {
     updateSettings({ speechRate: parseFloat(value) });
   };
@@ -370,6 +374,43 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
 
             {settings.voiceEnabled && (
               <>
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <label className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                      Audio-Only Mode
+                    </label>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Hide numbers visually, audio only
+                    </p>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      id="audio-only-mode"
+                      data-testid="audio-only-toggle"
+                      checked={settings.audioOnlyMode}
+                      onChange={handleAudioOnlyToggle}
+                      className="sr-only"
+                    />
+                    <label
+                      htmlFor="audio-only-mode"
+                      className={`flex items-center cursor-pointer w-12 h-6 rounded-full p-1 transition-colors duration-200 ${
+                        settings.audioOnlyMode
+                          ? 'bg-blue-600'
+                          : 'bg-slate-300 dark:bg-slate-600'
+                      }`}
+                    >
+                      <div
+                        className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ${
+                          settings.audioOnlyMode
+                            ? 'translate-x-6'
+                            : 'translate-x-0'
+                        }`}
+                      />
+                    </label>
+                  </div>
+                </div>
+
                 <div className="space-y-2">
                   <label
                     htmlFor="speech-rate"

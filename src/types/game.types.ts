@@ -6,6 +6,7 @@ export interface GameSettings {
   soundEnabled: boolean;
   hapticEnabled: boolean;
   voiceEnabled: boolean;
+  audioOnlyMode: boolean;
   speechRate: number;
   voiceURI: string;
 }
