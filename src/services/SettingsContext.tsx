@@ -18,6 +18,10 @@ const defaultSettings: GameSettings = {
   audioOnlyMode: false,
   speechRate: 1.0,
   voiceURI: '',
+  voiceRecognitionEnabled: false,
+  voiceConfidenceThreshold: 0.7,
+  voiceLanguage: 'en-US',
+  voiceAutoStart: true,
 };
 
 interface SettingsContextType {

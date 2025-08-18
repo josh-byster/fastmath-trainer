@@ -9,10 +9,20 @@ export interface GameSettings {
   audioOnlyMode: boolean;
   speechRate: number;
   voiceURI: string;
+  voiceRecognitionEnabled: boolean;
+  voiceConfidenceThreshold: number;
+  voiceLanguage: string;
+  voiceAutoStart: boolean;
 }
 
 export interface GameState {
-  state: 'idle' | 'playing' | 'input' | 'finished';
+  state:
+    | 'idle'
+    | 'playing'
+    | 'input'
+    | 'voiceListening'
+    | 'voiceProcessing'
+    | 'finished';
   currentSequence: number[];
   currentIndex: number;
   userAnswer: string;
@@ -20,6 +30,7 @@ export interface GameState {
   startTime: number | null;
   inputStartTime: number | null;
   endTime: number | null;
+  isVoiceMode: boolean;
 }
 
 export interface GameResult {

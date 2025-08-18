@@ -71,6 +71,10 @@ describe('GameLogic', () => {
       audioOnlyMode: false,
       speechRate: 1.0,
       voiceURI: '',
+      voiceRecognitionEnabled: false,
+      voiceConfidenceThreshold: 0.7,
+      voiceLanguage: 'en-US',
+      voiceAutoStart: true,
     };
 
     const hardSettings: GameSettings = {
@@ -84,6 +88,10 @@ describe('GameLogic', () => {
       audioOnlyMode: false,
       speechRate: 1.0,
       voiceURI: '',
+      voiceRecognitionEnabled: false,
+      voiceConfidenceThreshold: 0.7,
+      voiceLanguage: 'en-US',
+      voiceAutoStart: true,
     };
 
     it('should give perfect score for correct answer', () => {
@@ -183,6 +191,10 @@ describe('GameLogic', () => {
         audioOnlyMode: false,
         speechRate: 1.0,
         voiceURI: '',
+        voiceRecognitionEnabled: false,
+        voiceConfidenceThreshold: 0.7,
+        voiceLanguage: 'en-US',
+        voiceAutoStart: true,
       };
       const difficulty = GameLogic.getDifficultyLevel(settings);
       expect(difficulty).toBe('easy');
@@ -200,6 +212,10 @@ describe('GameLogic', () => {
         audioOnlyMode: false,
         speechRate: 1.0,
         voiceURI: '',
+        voiceRecognitionEnabled: false,
+        voiceConfidenceThreshold: 0.7,
+        voiceLanguage: 'en-US',
+        voiceAutoStart: true,
       };
       const difficulty = GameLogic.getDifficultyLevel(settings);
       expect(difficulty).toBe('hard');
@@ -217,6 +233,10 @@ describe('GameLogic', () => {
         audioOnlyMode: false,
         speechRate: 1.0,
         voiceURI: '',
+        voiceRecognitionEnabled: false,
+        voiceConfidenceThreshold: 0.7,
+        voiceLanguage: 'en-US',
+        voiceAutoStart: true,
       };
       const difficulty = GameLogic.getDifficultyLevel(settings);
       expect(difficulty).toBe('medium');

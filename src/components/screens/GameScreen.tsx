@@ -5,6 +5,8 @@ import { useStatistics } from '../../contexts/StatisticsContext';
 import { GameLogic } from '../../utils/gameLogic';
 import { AudioManager } from '../../utils/audioManager';
 import { NumberPad } from '../game/NumberPad';
+import { VoiceIndicator } from '../game/VoiceIndicator';
+import { useVoiceRecognition } from '../../hooks/useVoiceRecognition';
 import { GameResultExtended, ScoreResult } from '../../utils/scoringSystem';
 
 interface GameScreenProps {
@@ -46,6 +48,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     startTime: null,
     inputStartTime: null,
     endTime: null,
+    isVoiceMode: false,
   });
 
   const [currentNumber, setCurrentNumber] = useState<string>('');
@@ -54,6 +57,19 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     total: 5,
   });
   const [showInput, setShowInput] = useState(false);
+  const [voiceRetryCount, setVoiceRetryCount] = useState(0);
+
+  // Voice recognition hook
+  const voiceRecognition = useVoiceRecognition({
+    language: settings.voiceLanguage,
+    confidenceThreshold: settings.voiceConfidenceThreshold,
+    autoStart: settings.voiceAutoStart,
+  });
+
+  console.log('[VOICE] Voice recognition hook state:', {
+    isSupported: voiceRecognition.isSupported,
+    state: voiceRecognition.state,
+  });
 
   const startGame = async (): Promise<void> => {
     console.log(
@@ -95,6 +111,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
         startTime: Date.now(),
         inputStartTime: null,
         endTime: null,
+        isVoiceMode: false,
       });
 
       setSequencePosition({ current: 1, total: sequence.length });
@@ -108,8 +125,53 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
 
       // Switch to input mode and start timing user input
       const inputStartTime = Date.now();
-      setGameState((prev) => ({ ...prev, state: 'input', inputStartTime }));
-      setShowInput(true);
+
+      // Add a small delay to ensure voice recognition is properly initialized
+      await delay(100);
+
+      // Check speech recognition support directly
+      const SpeechRecognition =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
+      const directSupport = !!SpeechRecognition;
+
+      // Determine if we should use voice recognition
+      const shouldUseVoice =
+        settings.voiceRecognitionEnabled &&
+        directSupport &&
+        settings.voiceAutoStart;
+
+      console.log('[VOICE] Voice auto-start decision (after delay):', {
+        voiceRecognitionEnabled: settings.voiceRecognitionEnabled,
+        isSupported: voiceRecognition.isSupported,
+        directSupport: directSupport,
+        voiceAutoStart: settings.voiceAutoStart,
+        shouldUseVoice: shouldUseVoice,
+      });
+
+      if (shouldUseVoice) {
+        console.log('[VOICE] Starting voice recognition auto-start...');
+        setGameState((prev) => ({
+          ...prev,
+          state: 'voiceListening',
+          inputStartTime,
+          isVoiceMode: true,
+        }));
+        setVoiceRetryCount(0);
+        startVoiceRecognition();
+      } else {
+        console.log(
+          '[VOICE] Falling back to keyboard input - voice auto-start not enabled'
+        );
+        setGameState((prev) => ({
+          ...prev,
+          state: 'input',
+          inputStartTime,
+          isVoiceMode: false,
+        }));
+        setShowInput(true);
+      }
+
       setCurrentNumber('');
     } catch (error) {
       console.error('[GAME] Error during game start:', error);
@@ -308,6 +370,132 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
 
+  const startVoiceRecognition = async (): Promise<void> => {
+    console.log('[VOICE] startVoiceRecognition called');
+    try {
+      console.log('[VOICE] Setting state to voiceListening');
+      setGameState((prev) => ({ ...prev, state: 'voiceListening' }));
+      console.log('[VOICE] Calling voiceRecognition.startListening()');
+      const recognizedNumber = await voiceRecognition.startListening();
+      console.log('[VOICE] Voice recognition result:', recognizedNumber);
+
+      if (recognizedNumber !== null) {
+        // Voice recognition successful
+        setGameState((prev) => ({
+          ...prev,
+          state: 'voiceProcessing',
+          userAnswer: recognizedNumber.toString(),
+        }));
+
+        // Auto-submit the recognized answer
+        setTimeout(() => {
+          handleAnswerSubmission(recognizedNumber);
+        }, 500); // Small delay to show processing state
+      } else {
+        // Voice recognition failed, handle retry or fallback
+        console.log(
+          '[VOICE] Voice recognition returned null, handling failure'
+        );
+        handleVoiceRecognitionFailure();
+      }
+    } catch (error) {
+      console.error('[VOICE] Voice recognition error:', error);
+      handleVoiceRecognitionFailure();
+    }
+  };
+
+  const handleVoiceRecognitionFailure = (): void => {
+    setVoiceRetryCount((prev) => prev + 1);
+
+    if (voiceRetryCount < 2) {
+      // Allow up to 3 attempts
+      setTimeout(() => {
+        startVoiceRecognition();
+      }, 1000);
+    } else {
+      // Fallback to keyboard input after 3 failed attempts
+      fallbackToKeyboard();
+    }
+  };
+
+  const fallbackToKeyboard = (): void => {
+    setGameState((prev) => ({
+      ...prev,
+      state: 'input',
+      isVoiceMode: false,
+    }));
+    setShowInput(true);
+    voiceRecognition.clearError();
+  };
+
+  const retryVoiceRecognition = (): void => {
+    voiceRecognition.clearError();
+    setVoiceRetryCount(0);
+    startVoiceRecognition();
+  };
+
+  const handleAnswerSubmission = (answer: number): void => {
+    if (gameState.state === 'input' || gameState.state === 'voiceProcessing') {
+      const endTime = Date.now();
+      const responseTime = endTime - (gameState.inputStartTime || 0);
+      const isCorrect = answer === gameState.correctSum;
+
+      audioManagerRef.current?.playSound(
+        isCorrect ? 'correct' : 'incorrect',
+        settings.soundEnabled
+      );
+      audioManagerRef.current?.triggerHaptic(
+        isCorrect ? 'success' : 'error',
+        settings.hapticEnabled
+      );
+
+      // Calculate new scoring metrics
+      const scoringData = GameLogic.calculateScore(
+        answer,
+        gameState.correctSum,
+        responseTime,
+        settings
+      );
+
+      // Create extended game result for statistics
+      const gameResultExtended: GameResultExtended = {
+        isCorrect,
+        userAnswer: answer,
+        correctAnswer: gameState.correctSum,
+        responseTime,
+        score: scoringData.score,
+        sequence: gameState.currentSequence,
+        accuracyPercentage: scoringData.accuracyPercentage,
+        difficultyMultiplier: scoringData.difficultyMultiplier,
+        speedBonus: scoringData.speedBonus,
+        settings,
+        mistakes: 0,
+      };
+
+      // Calculate score and record statistics
+      const scoreResult = recordGame(gameResultExtended);
+
+      // Create basic result for navigation
+      const result: GameResult = {
+        isCorrect,
+        userAnswer: answer,
+        correctAnswer: gameState.correctSum,
+        responseTime,
+        score: scoringData.score,
+        sequence: gameState.currentSequence,
+        accuracyPercentage: scoringData.accuracyPercentage,
+        difficultyMultiplier: scoringData.difficultyMultiplier,
+        speedBonus: scoringData.speedBonus,
+      };
+
+      setGameState((prev) => ({ ...prev, state: 'finished', endTime }));
+      setShowInput(false);
+
+      // Navigate to results immediately
+      onNavigate('results', result, scoreResult);
+    }
+  };
+
   const handleNumberInput = (digit: string): void => {
     if (gameState.state !== 'input' || gameState.userAnswer.length >= 6) return;
 
@@ -329,64 +517,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
   const handleSubmitAnswer = (): void => {
     if (gameState.state !== 'input' || !gameState.userAnswer) return;
 
-    const endTime = Date.now();
-    const responseTime = endTime - (gameState.inputStartTime || 0);
     const userSum = parseInt(gameState.userAnswer);
-    const isCorrect = userSum === gameState.correctSum;
-
-    audioManagerRef.current?.playSound(
-      isCorrect ? 'correct' : 'incorrect',
-      settings.soundEnabled
-    );
-    audioManagerRef.current?.triggerHaptic(
-      isCorrect ? 'success' : 'error',
-      settings.hapticEnabled
-    );
-
-    // Calculate new scoring metrics
-    const scoringData = GameLogic.calculateScore(
-      userSum,
-      gameState.correctSum,
-      responseTime,
-      settings
-    );
-
-    // Create extended game result for statistics
-    const gameResultExtended: GameResultExtended = {
-      isCorrect,
-      userAnswer: userSum,
-      correctAnswer: gameState.correctSum,
-      responseTime,
-      score: scoringData.score,
-      sequence: gameState.currentSequence,
-      accuracyPercentage: scoringData.accuracyPercentage,
-      difficultyMultiplier: scoringData.difficultyMultiplier,
-      speedBonus: scoringData.speedBonus,
-      settings,
-      mistakes: 0, // Could be enhanced to track input mistakes
-    };
-
-    // Calculate score and record statistics
-    const scoreResult = recordGame(gameResultExtended);
-
-    // Create basic result for navigation
-    const result: GameResult = {
-      isCorrect,
-      userAnswer: userSum,
-      correctAnswer: gameState.correctSum,
-      responseTime,
-      score: scoringData.score,
-      sequence: gameState.currentSequence,
-      accuracyPercentage: scoringData.accuracyPercentage,
-      difficultyMultiplier: scoringData.difficultyMultiplier,
-      speedBonus: scoringData.speedBonus,
-    };
-
-    setGameState((prev) => ({ ...prev, state: 'finished', endTime }));
-    setShowInput(false);
-
-    // Navigate to results immediately
-    onNavigate('results', result, scoreResult);
+    handleAnswerSubmission(userSum);
   };
 
   return (
@@ -453,12 +585,33 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
           <div className="game-input-panel-new" data-testid="new-input-panel">
             <div className="game-input-content">
               <div className="text-center space-y-4">
-                <label
-                  htmlFor="answer-display"
-                  className="text-lg font-semibold text-slate-700 dark:text-slate-200"
-                >
-                  Your Answer:
-                </label>
+                <div className="flex justify-between items-center">
+                  <label
+                    htmlFor="answer-display"
+                    className="text-lg font-semibold text-slate-700 dark:text-slate-200"
+                  >
+                    Your Answer:
+                  </label>
+                  {settings.voiceRecognitionEnabled &&
+                    voiceRecognition.isSupported && (
+                      <button
+                        onClick={() => {
+                          setGameState((prev) => ({
+                            ...prev,
+                            state: 'voiceListening',
+                            isVoiceMode: true,
+                          }));
+                          setShowInput(false);
+                          setVoiceRetryCount(0);
+                          startVoiceRecognition();
+                        }}
+                        className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm"
+                        title="Use voice input"
+                      >
+                        🎤 Voice
+                      </button>
+                    )}
+                </div>
                 <div
                   id="answer-display"
                   className="glass-card mx-auto w-48 h-16 flex items-center justify-center text-3xl font-bold text-blue-600 dark:text-blue-400"
@@ -477,6 +630,21 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
             </div>
           </div>
         </>
+      )}
+
+      {/* Voice Recognition Indicator */}
+      {gameState.isVoiceMode && (
+        <VoiceIndicator
+          isListening={voiceRecognition.state.isListening}
+          isProcessing={
+            voiceRecognition.state.isProcessing ||
+            gameState.state === 'voiceProcessing'
+          }
+          error={voiceRecognition.state.error}
+          transcript={voiceRecognition.state.transcript}
+          onRetry={retryVoiceRecognition}
+          onCancel={fallbackToKeyboard}
+        />
       )}
     </section>
   );

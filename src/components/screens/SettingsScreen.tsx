@@ -474,6 +474,129 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           </div>
         </div>
 
+        {/* Voice Recognition */}
+        <div className="settings-section">
+          <h3 className="text-xl font-semibold mb-4 text-slate-700 dark:text-slate-200">
+            Voice Recognition (Beta)
+          </h3>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                  Enable Voice Input
+                </label>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Speak your answers instead of typing
+                </p>
+              </div>
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  id="voice-recognition-enabled"
+                  data-testid="voice-recognition-toggle"
+                  checked={settings.voiceRecognitionEnabled}
+                  onChange={() =>
+                    updateSettings({
+                      voiceRecognitionEnabled:
+                        !settings.voiceRecognitionEnabled,
+                    })
+                  }
+                  className="sr-only"
+                />
+                <label
+                  htmlFor="voice-recognition-enabled"
+                  className={`flex items-center cursor-pointer w-12 h-6 rounded-full p-1 transition-colors duration-200 ${
+                    settings.voiceRecognitionEnabled
+                      ? 'bg-blue-600'
+                      : 'bg-slate-300 dark:bg-slate-600'
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ${
+                      settings.voiceRecognitionEnabled
+                        ? 'translate-x-6'
+                        : 'translate-x-0'
+                    }`}
+                  />
+                </label>
+              </div>
+            </div>
+
+            {settings.voiceRecognitionEnabled && (
+              <>
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <label className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                      Auto-start Voice Input
+                    </label>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Automatically start listening after sequence
+                    </p>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      id="voice-auto-start"
+                      checked={settings.voiceAutoStart}
+                      onChange={() =>
+                        updateSettings({
+                          voiceAutoStart: !settings.voiceAutoStart,
+                        })
+                      }
+                      className="sr-only"
+                    />
+                    <label
+                      htmlFor="voice-auto-start"
+                      className={`flex items-center cursor-pointer w-12 h-6 rounded-full p-1 transition-colors duration-200 ${
+                        settings.voiceAutoStart
+                          ? 'bg-blue-600'
+                          : 'bg-slate-300 dark:bg-slate-600'
+                      }`}
+                    >
+                      <div
+                        className={`w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ${
+                          settings.voiceAutoStart
+                            ? 'translate-x-6'
+                            : 'translate-x-0'
+                        }`}
+                      />
+                    </label>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                    Confidence Threshold
+                  </label>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Minimum confidence for accepting voice input (70%
+                    recommended)
+                  </p>
+                  <div className="flex items-center space-x-4">
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="0.95"
+                      step="0.05"
+                      value={settings.voiceConfidenceThreshold}
+                      onChange={(e) =>
+                        updateSettings({
+                          voiceConfidenceThreshold: parseFloat(e.target.value),
+                        })
+                      }
+                      className="flex-1 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer dark:bg-slate-700"
+                    />
+                    <span className="text-sm font-medium text-slate-600 dark:text-slate-300 min-w-[3rem]">
+                      {Math.round(settings.voiceConfidenceThreshold * 100)}%
+                    </span>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
         {/* Preview */}
         <div className="settings-section">
           <h3 className="text-xl font-semibold mb-4 text-slate-700 dark:text-slate-200">
