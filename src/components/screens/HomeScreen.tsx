@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, TrendingUp, Brain, Download } from 'lucide-react';
+import { Play, Brain, Download } from 'lucide-react';
 import { PWAInstallManager } from '../../utils/pwaInstallManager';
 import { Screen } from '../../types/game.types';
 
@@ -15,12 +15,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigate,
   pwaManager,
 }) => {
-  const handleViewStats = (): void => {
-    if (onNavigate) {
-      onNavigate('stats');
-    }
-  };
-
   const handleInstallApp = (): void => {
     if (pwaManager) {
       pwaManager.promptInstall();
