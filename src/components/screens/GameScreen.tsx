@@ -119,9 +119,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
   };
 
   useEffect(() => {
-    console.log(
-      `[USEEFFECT] useEffect triggered for instance ${componentIdRef.current}`
-    );
+    const componentId = componentIdRef.current; // Capture ref value for cleanup
+    console.log(`[USEEFFECT] useEffect triggered for instance ${componentId}`);
     console.log(
       `[USEEFFECT] gameInitializedRef.current: ${gameInitializedRef.current}`
     );
@@ -129,18 +128,18 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
     if (!gameInitializedRef.current) {
       gameInitializedRef.current = true;
       console.log(
-        `[USEEFFECT] About to call startGame from useEffect for instance ${componentIdRef.current}`
+        `[USEEFFECT] About to call startGame from useEffect for instance ${componentId}`
       );
       startGame();
     } else {
       console.log(
-        `[USEEFFECT] Skipping startGame - already initialized for instance ${componentIdRef.current}`
+        `[USEEFFECT] Skipping startGame - already initialized for instance ${componentId}`
       );
     }
 
     return () => {
       console.log(
-        `[CLEANUP] Cleanup function called for instance ${componentIdRef.current}`
+        `[CLEANUP] Cleanup function called for instance ${componentId}`
       );
       try {
         audioManagerRef.current?.cleanup();
@@ -151,7 +150,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onNavigate }) => {
         // Silently handle cleanup errors in tests
       }
     };
-  }, []); // Empty dependency array - only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - only run once on mount, startGame is intentionally excluded to prevent re-execution
 
   const playSequence = async (sequence: number[]): Promise<void> => {
     const { timeOnScreen, timeBetween } = settings;
