@@ -51,4 +51,10 @@ export interface SoundType {
 
 export type HapticIntensity = 'light' | 'medium' | 'success' | 'error';
 
-export type Screen = 'home' | 'game' | 'settings' | 'results' | 'stats';
+export type Screen =
+  | 'home'
+  | 'game'
+  | 'settings'
+  | 'results'
+  | 'stats'
+  | 'achievements';

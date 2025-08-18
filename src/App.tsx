@@ -8,6 +8,7 @@ import { GameScreen } from './components/screens/GameScreen';
 import { SettingsScreen } from './components/screens/SettingsScreen';
 import { ResultsScreen } from './components/screens/ResultsScreen';
 import { StatsScreen } from './components/screens/StatsScreen';
+import { AchievementsScreen } from './components/screens/AchievementsScreen';
 import { SettingsProvider } from './services/SettingsContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { StatisticsProvider } from './contexts/StatisticsContext';
@@ -34,6 +35,8 @@ const App: React.FC = () => {
         navigateToScreen('game');
       } else if (action === 'stats') {
         navigateToScreen('stats');
+      } else if (action === 'achievements') {
+        navigateToScreen('achievements');
       }
     };
 
@@ -108,6 +111,7 @@ const App: React.FC = () => {
         />
       ),
       stats: <StatsScreen onNavigate={navigateToScreen} />,
+      achievements: <AchievementsScreen onNavigate={navigateToScreen} />,
     };
 
     return screenComponents[currentScreen] || screenComponents.home;

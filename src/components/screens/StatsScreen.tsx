@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Screen } from '../../types/game.types';
 import { useStatistics } from '../../contexts/StatisticsContext';
-import {
-  StatsSummary,
-  Achievement,
-  RecentGame,
-} from '../../utils/statisticsManager';
+import { StatsSummary, RecentGame } from '../../utils/statisticsManager';
 
 interface StatsScreenProps {
   onNavigate: (screen: Screen) => void;
@@ -15,19 +11,13 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
   const { statisticsManager } = useStatistics();
   const [stats, setStats] = useState<StatsSummary | null>(null);
   const [recentGames, setRecentGames] = useState<RecentGame[]>([]);
-  const [achievements, setAchievements] = useState<
-    (Achievement & { isUnlocked: boolean })[]
-  >([]);
 
   useEffect(() => {
     const summary = statisticsManager.getStatsSummary();
     const recent = statisticsManager.getRecentGames(10);
-    const allAchievements =
-      statisticsManager.getAllAvailableAchievementsWithStatus();
 
     setStats(summary);
     setRecentGames(recent);
-    setAchievements(allAchievements);
   }, [statisticsManager]);
 
   const handleExport = () => {
@@ -39,12 +29,9 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
       // Refresh data after reset
       const summary = statisticsManager.getStatsSummary();
       const recent = statisticsManager.getRecentGames(10);
-      const allAchievements =
-        statisticsManager.getAllAvailableAchievementsWithStatus();
 
       setStats(summary);
       setRecentGames(recent);
-      setAchievements(allAchievements);
     }
   };
 
@@ -166,8 +153,8 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                 );
               })()}
 
-              {/* Current Streak or Recent Achievement */}
-              {stats.currentStreak > 0 ? (
+              {/* Current Streak */}
+              {stats.currentStreak > 0 && (
                 <div className="glass rounded-lg p-4 border-l-4 border-green-500">
                   <div className="flex items-center mb-2">
                     <span className="text-lg mr-2">🔥</span>
@@ -185,33 +172,6 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
                     Best: {stats.bestStreak} games
                   </div>
                 </div>
-              ) : (
-                achievements.find((a) => a.isUnlocked) && (
-                  <div className="glass rounded-lg p-4 border-l-4 border-purple-500">
-                    <div className="flex items-center mb-2">
-                      <span className="text-lg mr-2">🎉</span>
-                      <span className="font-bold text-slate-700 dark:text-slate-200">
-                        Latest Achievement
-                      </span>
-                    </div>
-                    <div className="text-lg font-bold text-purple-600 dark:text-purple-400 mb-1">
-                      {
-                        achievements.filter((a) => a.isUnlocked).slice(-1)[0]
-                          ?.name
-                      }
-                    </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
-                      {
-                        achievements.filter((a) => a.isUnlocked).slice(-1)[0]
-                          ?.description
-                      }
-                    </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-500 mt-1">
-                      {achievements.filter((a) => a.isUnlocked).length}/
-                      {achievements.length} unlocked
-                    </div>
-                  </div>
-                )
               )}
             </div>
           </div>
@@ -254,62 +214,6 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
           </div>
         )}
 
-        {/* Achievements */}
-        {achievements.length > 0 && (
-          <div className="glass rounded-lg p-6 mb-6">
-            <h3 className="text-xl font-bold text-slate-700 dark:text-slate-200 mb-4">
-              Achievements ({achievements.filter((a) => a.isUnlocked).length}/
-              {achievements.length})
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {achievements.map((achievement) => (
-                <div
-                  key={achievement.id}
-                  className={`border rounded-lg p-4 transition-all duration-200 ${
-                    achievement.isUnlocked
-                      ? 'bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-yellow-200 dark:border-yellow-700'
-                      : 'bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-700/50 border-slate-200 dark:border-slate-600 opacity-60'
-                  }`}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="text-2xl">
-                      {achievement.isUnlocked ? '🏆' : '🔒'}
-                    </div>
-                    <div>
-                      <div
-                        className={`font-bold ${
-                          achievement.isUnlocked
-                            ? 'text-yellow-800 dark:text-yellow-200'
-                            : 'text-slate-600 dark:text-slate-400'
-                        }`}
-                      >
-                        {achievement.name}
-                      </div>
-                      <div
-                        className={`text-sm ${
-                          achievement.isUnlocked
-                            ? 'text-yellow-600 dark:text-yellow-300'
-                            : 'text-slate-500 dark:text-slate-500'
-                        }`}
-                      >
-                        {achievement.description}
-                      </div>
-                      {achievement.isUnlocked && achievement.unlockedAt && (
-                        <div className="text-xs text-yellow-500 dark:text-yellow-400 mt-1">
-                          Unlocked:{' '}
-                          {new Date(
-                            achievement.unlockedAt
-                          ).toLocaleDateString()}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* No Data State */}
         {stats.totalGames === 0 && (
           <div className="glass rounded-lg p-8 text-center">
@@ -344,6 +248,12 @@ export const StatsScreen: React.FC<StatsScreenProps> = ({ onNavigate }) => {
             onClick={() => onNavigate('home')}
           >
             Return Home
+          </button>
+          <button
+            className="btn-secondary-modern flex-1"
+            onClick={() => onNavigate('achievements')}
+          >
+            Achievements
           </button>
           <button
             className="btn-primary-modern flex-1"

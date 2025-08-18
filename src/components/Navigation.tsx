@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Home, Settings, BarChart3 } from 'lucide-react';
+import { Home, Settings, BarChart3, Trophy } from 'lucide-react';
 import { Screen } from '../types/game.types';
 
 interface NavigationProps {
@@ -18,8 +18,9 @@ export const Navigation: React.FC<NavigationProps> = ({
     icon: React.ComponentType<any>;
   }[] = [
     { screen: 'home', label: 'Home', icon: Home },
-    { screen: 'settings', label: 'Settings', icon: Settings },
+    { screen: 'achievements', label: 'Achievements', icon: Trophy },
     { screen: 'stats', label: 'Stats', icon: BarChart3 },
+    { screen: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (
