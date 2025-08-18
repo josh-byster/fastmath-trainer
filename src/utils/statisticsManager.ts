@@ -656,6 +656,9 @@ export class StatisticsManager {
         'Are you sure you want to reset all statistics? This cannot be undone.'
       )
     ) {
+      // Preserve achievements when resetting
+      const preservedAchievements = [...this.stats.achievements];
+
       this.stats = {
         totalGames: 0,
         correctGames: 0,
@@ -666,7 +669,7 @@ export class StatisticsManager {
         averageResponseTime: 0,
         gameHistory: [],
         dailyStats: {},
-        achievements: [],
+        achievements: preservedAchievements,
         createdAt: new Date().toISOString(),
       };
       this.save();
