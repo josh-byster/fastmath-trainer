@@ -25,7 +25,8 @@ export const Navigation: React.FC<NavigationProps> = ({
 
   return (
     <motion.footer
-      className="fixed bottom-0 left-0 right-0 z-40"
+      className="fixed left-0 right-0 z-40"
+      style={{ bottom: 'var(--safe-area-inset-bottom, 0px)' }}
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: 'easeOut', delay: 0.3 }}

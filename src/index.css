@@ -20,7 +20,7 @@
   
   /* Layout primitives */
   --header-height: 4rem;
-  --navigation-height: 5rem;
+  --navigation-height: calc(5rem + var(--safe-area-inset-bottom, 0px));
   
   /* Responsive breakpoints */
   --mobile-max: 768px;
@@ -34,18 +34,16 @@
   display: grid;
   grid-template-areas: 
     "header"
-    "main"
-    "navigation";
+    "main";
   grid-template-rows: 
     var(--header-height)
-    1fr
-    var(--navigation-height);
+    1fr;
   
-  /* Apply safe areas as padding to entire app */
+  /* Apply safe areas as padding to entire app - navigation handles its own bottom */
   padding: 
     var(--safe-area-inset-top)
     var(--safe-area-inset-right) 
-    var(--safe-area-inset-bottom)
+    0
     var(--safe-area-inset-left);
   
   /* Prevent any overflow */
@@ -62,12 +60,11 @@
   overflow: hidden auto; /* Only vertical scroll when needed */
   position: relative;
   z-index: 1;
+  /* Add padding to prevent content from being hidden behind fixed navigation */
+  padding-bottom: var(--navigation-height);
 }
 
-.app__navigation {
-  grid-area: navigation;
-  z-index: 10;
-}
+/* Navigation is now fixed positioned, no longer part of grid */
 
 /* Screen Container Base Styles */
 .screen-container {
